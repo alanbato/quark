@@ -1,0 +1,38 @@
+
+def fizz_buzz(n: Int, m: Int) -> non
+    (n = m):
+        non
+    (n % 3 = 0, n % 5 = 0):
+        print("FizzBuzz")
+    (n % 3 = 0):
+        print("Fizz")
+    (n % 5 = 0):
+        print("Buzz")
+    default:
+        print(n)
+        Int y <- n + 1
+        fizz_buzz(y, m)
+
+def shout(s: String) -> String
+    default:
+        upper(s)
+
+def n_times(x: Any, n: Int) -> [Any]
+    (n <= 0):
+        []
+    default:
+        Int m <- n - 1
+        x | n_times(x, m)
+
+def say_things(x: [Any]) -> non
+    (x = []):
+        non
+    (match [y | xs] <- x):
+        print(y)
+        say_things(xs)
+
+
+say_things(n_times(shout("hello!"), 3))
+# :)"HELLO!"
+# :)"HELLO!"
+# :)"HELLO!"
