@@ -1,4 +1,3 @@
-
 def fizz_buzz(n: Int, m: Int) -> non
     (n = m):
         non
@@ -21,13 +20,15 @@ def n_times(x: Any, n: Int) -> [Any]
     (n <= 0):
         []
     default:
-        Int m <- n - 1
-        x | n_times(x, m)
+        m: Int <- n - 1
+        append(x, n_times(x, m))
 
 def say_things(x: [Any]) -> non
     (x = []):
         non
-    (match [y | xs] <- x):
+    default:
+        y <- head(x)
+        xs <- tail(x)
         print(y)
         say_things(xs)
 
@@ -36,3 +37,9 @@ say_things(n_times(shout("hello!"), 3))
 # :)"HELLO!"
 # :)"HELLO!"
 # :)"HELLO!"
+
+
+type Rectangle <- [Float, Float]
+type Triangle <- [Float]
+type Circle <- [Float]
+type Shape <- (Rectangle | Triangle | Circle)
