@@ -13,9 +13,9 @@ moreparams:
     |
     ;
 type:
-    ID
+    ID # UserType
     | 'Int' '?'? # Int
-    | 'Bool' '?'? # Bool
+    | 'Bool' '?'? # Boolean
     | 'Float' '?'? # Float
     | 'String' '?'? # String
     | '[' type ']' # ListOfType
