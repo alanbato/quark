@@ -1,37 +1,39 @@
 grammar Quark;
 
-ID: '[a-z]+[a-zA-Z0-9_]*';
-CONST_I: '[0-9]+';
-CONST_F: '[0-9]+[.][0-9]+';
+ID: [a-z][a-zA-Z0-9_]*;
+CONST_I: [0-9]+;
+CONST_F: [0-9]+[.][0-9]+;
+SPACE: [ ] -> skip;
 
 function: 
-    'def' ID '(' params '->' type ('\n\t' cond block)* '\n\t' 'default:\n\t' block;
+    'def' ID '(' params '->' typeRule ('\n\t' cond block)* '\n\t' 'default:\n\t' block;
 params: 
-    ID ':' type moreparams;
+    ID ':' typeRule moreparams;
 moreparams: 
-    ',' ID ':' type
+    ',' ID ':' typeRule
     |
     ;
-type:
+typeRule:
     ID # UserType
     | 'Int' '?'? # Int
     | 'Bool' '?'? # Boolean
     | 'Float' '?'? # Float
     | 'String' '?'? # String
-    | '[' type ']' # ListOfType
+    | '[' typeRule ']' # ListOfType
     ;
 typedef:
-    'type' ID '<-' (type | typeset);
+    'type' ID '<-' (typeRule | typeset);
 typeset:
-    '(' type | ('|' type)* ')';
+    '(' typeRule | ('|' typeRule)* ')';
 cond:
     '(' expression more_expressions '):\n\t';
 expression:
-    bool
+    boolRule
     | exp
     | comparator expression
+    | 'non'
     ;
-bool:
+boolRule:
     'True'
     | 'False'
     | ID
@@ -79,6 +81,13 @@ statement:
 func_call:
     ID '(' expression more_expressions ')';
 assignment:
-    type ID '<-' expression;
+    typeRule ID '<-' expression;
 main:
-    (function | func_call | assignment | expression) ('\n' main)*;
+    things morethings EOF;
+
+things:
+    (function | func_call | assignment | expression);
+morethings:
+    ',' things morethings
+    |
+    ;

@@ -34,10 +34,6 @@ def say_things(x: [Any]) -> non
 
 
 say_things(n_times(shout("hello!"), 3))
-# :)"HELLO!"
-# :)"HELLO!"
-# :)"HELLO!"
-
 
 type Rectangle <- [Float, Float]
 type Triangle <- [Float]
