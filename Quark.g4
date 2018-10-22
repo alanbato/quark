@@ -1,93 +1,75 @@
 grammar Quark;
 
 ID: [a-z][a-zA-Z0-9_]*;
+TYPE_ID: [A-Z][a-zA-Z0-9_]*;
 CONST_I: [0-9]+;
-CONST_F: [0-9]+[.][0-9]+;
-SPACE: [ ] -> skip;
+CONST_F: [0-9]+ [.][0-9]+;
+STRING: ["].*? ["];
+SPACE: [\t\n\r\f ]+ -> skip;
 
-function: 
-    'def' ID '(' params '->' typeRule ('\n\t' cond block)* '\n\t' 'default:\n\t' block;
-params: 
-    ID ':' typeRule moreparams;
-moreparams: 
-    ',' ID ':' typeRule
-    |
-    ;
+function:
+	'def' ID '(' params ')' '->' typeRule '{' (
+		cond '{' block '}'
+	)* 'default {' block '}' '}';
+params: ID ':' typeRule moreparams;
+moreparams: ',' ID ':' typeRule |;
+moreTypes: ',' typeRule |;
 typeRule:
-    ID # UserType
-    | 'Int' '?'? # Int
-    | 'Bool' '?'? # Boolean
-    | 'Float' '?'? # Float
-    | 'String' '?'? # String
-    | '[' typeRule ']' # ListOfType
-    ;
-typedef:
-    'type' ID '<-' (typeRule | typeset);
-typeset:
-    '(' typeRule | ('|' typeRule)* ')';
-cond:
-    '(' expression more_expressions '):\n\t';
+	TYPE_ID							# UserType
+	| 'Int' '?'?					# Int
+	| 'Bool' '?'?					# Boolean
+	| 'Float' '?'?					# Float
+	| 'String' '?'?					# String
+	| 'non'							# None
+	| '[' typeRule moreTypes ']'	# ListOfType;
+typedef: 'type' TYPE_ID '<-' (typeRule | typeset);
+typeset: '(' typeRule ('|' typeRule)* ')';
+cond: '(' expression more_expressions ')';
 expression:
-    boolRule
-    | exp
-    | comparator expression
-    | 'non'
-    ;
-boolRule:
-    'True'
-    | 'False'
-    | ID
-    ;
+	boolRule
+	| exp expression
+	| exp
+	| expression comparator expression
+	| 'non'
+	| func_call;
+boolRule: 'True' | 'False' | ID;
 comparator:
-    '>' # Greater
-    | '<' # Lesser
-    | '=' # Equal
-    | '>=' # GreaterEqual
-    | '<=' # LesserEqual
-    | '!=' # NotEqual
-    ;
+	'>'		# Greater
+	| '<'	# Lesser
+	| '='	# Equal
+	| '>='	# GreaterEqual
+	| '<='	# LesserEqual
+	| '!='	# NotEqual;
 exp:
-    term # JustTerm
-    | '+' term # Addition
-    | '-' term # Substraction
-    ;
+	term		# JustTerm
+	| '+' term	# Addition
+	| '-' term	# Substraction;
 term:
-    factor # JustFactor
-    | '*' factor # Multiplication
-    | '/' factor # Division
-    ;
-more_expressions:
-    ',' expression more_expressions
-    |
-    ;
+	factor			# JustFactor
+	| '*' factor	# Multiplication
+	| '/' factor	# Division
+	| '%' factor	# Modulo;
+more_expressions: ',' expression more_expressions |;
 factor:
-    '-'? varconst
-    | '(' expression ')'
-    ;
-varconst:
-    ID
-    | CONST_I
-    | CONST_F
-    ;
+	'-'? varconst
+	| '(' expression ')'
+	| 'non'
+	| STRING
+	| '[' expression more_expressions ']'
+	| '[]';
+varconst: ID | CONST_I | CONST_F;
 
-block:
-    statement ('\n\t' statement)+;
+block: statement (statement)*;
 
-statement:
-    func_call
-    | assignment
-    | expression
-    ;
-func_call:
-    ID '(' expression more_expressions ')';
-assignment:
-    typeRule ID '<-' expression;
-main:
-    things morethings EOF;
+statement: assignment | expression;
+func_call: ID '(' expression more_expressions ')';
+assignment: typeRule ID '<-' expression;
+main: things morethings EOF;
 
 things:
-    (function | func_call | assignment | expression);
-morethings:
-    ',' things morethings
-    |
-    ;
+	function
+	| func_call
+	| assignment
+	| expression
+	| typedef;
+morethings: things morethings |;

@@ -35,6 +35,15 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by QuarkParser#moreTypes.
+    def enterMoreTypes(self, ctx:QuarkParser.MoreTypesContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#moreTypes.
+    def exitMoreTypes(self, ctx:QuarkParser.MoreTypesContext):
+        pass
+
+
     # Enter a parse tree produced by QuarkParser#UserType.
     def enterUserType(self, ctx:QuarkParser.UserTypeContext):
         pass
@@ -77,6 +86,15 @@ class QuarkListener(ParseTreeListener):
 
     # Exit a parse tree produced by QuarkParser#String.
     def exitString(self, ctx:QuarkParser.StringContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#None.
+    def enterNone(self, ctx:QuarkParser.NoneContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#None.
+    def exitNone(self, ctx:QuarkParser.NoneContext):
         pass
 
 
@@ -239,6 +257,15 @@ class QuarkListener(ParseTreeListener):
 
     # Exit a parse tree produced by QuarkParser#Division.
     def exitDivision(self, ctx:QuarkParser.DivisionContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#Modulo.
+    def enterModulo(self, ctx:QuarkParser.ModuloContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#Modulo.
+    def exitModulo(self, ctx:QuarkParser.ModuloContext):
         pass
 
 
