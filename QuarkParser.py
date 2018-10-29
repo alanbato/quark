@@ -11,7 +11,7 @@ from collections import namedtuple
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3*")
-        buf.write("\u0100\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\u011a\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
         buf.write("\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\3\2")
@@ -24,24 +24,26 @@ def serializedATN():
         buf.write("\b\3\b\3\b\3\b\7\b\u0083\n\b\f\b\16\b\u0086\13\b\3\b\3")
         buf.write("\b\3\t\3\t\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n")
         buf.write("\5\n\u0097\n\n\3\n\3\n\3\n\3\n\7\n\u009d\n\n\f\n\16\n")
-        buf.write("\u00a0\13\n\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00aa")
-        buf.write("\n\f\3\r\3\r\3\r\3\r\3\r\5\r\u00b1\n\r\3\16\3\16\3\16")
-        buf.write("\3\16\3\16\3\16\3\16\5\16\u00ba\n\16\3\17\3\17\3\17\3")
-        buf.write("\17\3\17\5\17\u00c1\n\17\3\20\5\20\u00c4\n\20\3\20\3\20")
-        buf.write("\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20")
-        buf.write("\5\20\u00d3\n\20\3\21\3\21\3\22\3\22\7\22\u00d9\n\22\f")
-        buf.write("\22\16\22\u00dc\13\22\3\23\3\23\5\23\u00e0\n\23\3\24\3")
-        buf.write("\24\3\24\3\24\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25")
-        buf.write("\3\26\3\26\3\26\3\26\3\26\3\27\3\27\3\27\3\27\3\27\5\27")
-        buf.write("\u00f8\n\27\3\30\3\30\3\30\3\30\5\30\u00fe\n\30\3\30\2")
-        buf.write("\3\22\31\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(")
-        buf.write("*,.\2\4\4\2\27\30%%\4\2%%\'(\2\u0114\2\60\3\2\2\2\4J\3")
-        buf.write("\2\2\2\6W\3\2\2\2\b\\\3\2\2\2\nu\3\2\2\2\fw\3\2\2\2\16")
-        buf.write("~\3\2\2\2\20\u0089\3\2\2\2\22\u0096\3\2\2\2\24\u00a1\3")
-        buf.write("\2\2\2\26\u00a9\3\2\2\2\30\u00b0\3\2\2\2\32\u00b9\3\2")
-        buf.write("\2\2\34\u00c0\3\2\2\2\36\u00d2\3\2\2\2 \u00d4\3\2\2\2")
-        buf.write("\"\u00d6\3\2\2\2$\u00df\3\2\2\2&\u00e1\3\2\2\2(\u00e7")
-        buf.write("\3\2\2\2*\u00ed\3\2\2\2,\u00f7\3\2\2\2.\u00fd\3\2\2\2")
+        buf.write("\u00a0\13\n\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f")
+        buf.write("\3\f\3\f\3\f\3\f\5\f\u00b0\n\f\3\r\3\r\3\r\3\r\3\r\3\r")
+        buf.write("\3\r\3\r\3\r\3\r\3\r\5\r\u00bd\n\r\3\16\3\16\3\16\3\16")
+        buf.write("\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16")
+        buf.write("\3\16\5\16\u00cf\n\16\3\17\3\17\3\17\3\17\3\17\5\17\u00d6")
+        buf.write("\n\17\3\20\5\20\u00d9\n\20\3\20\3\20\3\20\3\20\3\20\3")
+        buf.write("\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20")
+        buf.write("\3\20\3\20\5\20\u00ed\n\20\3\21\3\21\3\22\3\22\7\22\u00f3")
+        buf.write("\n\22\f\22\16\22\u00f6\13\22\3\23\3\23\5\23\u00fa\n\23")
+        buf.write("\3\24\3\24\3\24\3\24\3\24\3\24\3\25\3\25\3\25\3\25\3\25")
+        buf.write("\3\25\3\26\3\26\3\26\3\26\3\26\3\27\3\27\3\27\3\27\3\27")
+        buf.write("\5\27\u0112\n\27\3\30\3\30\3\30\3\30\5\30\u0118\n\30\3")
+        buf.write("\30\2\3\22\31\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 ")
+        buf.write("\"$&(*,.\2\4\4\2\27\30%%\4\2%%\'(\2\u012e\2\60\3\2\2\2")
+        buf.write("\4J\3\2\2\2\6W\3\2\2\2\b\\\3\2\2\2\nu\3\2\2\2\fw\3\2\2")
+        buf.write("\2\16~\3\2\2\2\20\u0089\3\2\2\2\22\u0096\3\2\2\2\24\u00a1")
+        buf.write("\3\2\2\2\26\u00af\3\2\2\2\30\u00bc\3\2\2\2\32\u00ce\3")
+        buf.write("\2\2\2\34\u00d5\3\2\2\2\36\u00ec\3\2\2\2 \u00ee\3\2\2")
+        buf.write("\2\"\u00f0\3\2\2\2$\u00f9\3\2\2\2&\u00fb\3\2\2\2(\u0101")
+        buf.write("\3\2\2\2*\u0107\3\2\2\2,\u0111\3\2\2\2.\u0117\3\2\2\2")
         buf.write("\60\61\7\3\2\2\61\62\7%\2\2\62\63\b\2\1\2\63\64\7\4\2")
         buf.write("\2\64\65\5\4\3\2\65\66\7\5\2\2\66\67\7\6\2\2\678\5\n\6")
         buf.write("\289\b\2\1\29A\7\7\2\2:;\5\20\t\2;<\7\7\2\2<=\5\"\22\2")
@@ -75,51 +77,60 @@ def serializedATN():
         buf.write("\2\u009a\u009b\5\22\n\6\u009b\u009d\3\2\2\2\u009c\u0098")
         buf.write("\3\2\2\2\u009d\u00a0\3\2\2\2\u009e\u009c\3\2\2\2\u009e")
         buf.write("\u009f\3\2\2\2\u009f\23\3\2\2\2\u00a0\u009e\3\2\2\2\u00a1")
-        buf.write("\u00a2\t\2\2\2\u00a2\25\3\2\2\2\u00a3\u00aa\7\31\2\2\u00a4")
-        buf.write("\u00aa\7\32\2\2\u00a5\u00aa\7\33\2\2\u00a6\u00aa\7\34")
-        buf.write("\2\2\u00a7\u00aa\7\35\2\2\u00a8\u00aa\7\36\2\2\u00a9\u00a3")
-        buf.write("\3\2\2\2\u00a9\u00a4\3\2\2\2\u00a9\u00a5\3\2\2\2\u00a9")
-        buf.write("\u00a6\3\2\2\2\u00a9\u00a7\3\2\2\2\u00a9\u00a8\3\2\2\2")
-        buf.write("\u00aa\27\3\2\2\2\u00ab\u00b1\5\32\16\2\u00ac\u00ad\7")
-        buf.write("\37\2\2\u00ad\u00b1\5\32\16\2\u00ae\u00af\7 \2\2\u00af")
-        buf.write("\u00b1\5\32\16\2\u00b0\u00ab\3\2\2\2\u00b0\u00ac\3\2\2")
-        buf.write("\2\u00b0\u00ae\3\2\2\2\u00b1\31\3\2\2\2\u00b2\u00ba\5")
-        buf.write("\36\20\2\u00b3\u00b4\7!\2\2\u00b4\u00ba\5\36\20\2\u00b5")
-        buf.write("\u00b6\7\"\2\2\u00b6\u00ba\5\36\20\2\u00b7\u00b8\7#\2")
-        buf.write("\2\u00b8\u00ba\5\36\20\2\u00b9\u00b2\3\2\2\2\u00b9\u00b3")
-        buf.write("\3\2\2\2\u00b9\u00b5\3\2\2\2\u00b9\u00b7\3\2\2\2\u00ba")
-        buf.write("\33\3\2\2\2\u00bb\u00bc\7\13\2\2\u00bc\u00bd\5\22\n\2")
-        buf.write("\u00bd\u00be\5\34\17\2\u00be\u00c1\3\2\2\2\u00bf\u00c1")
-        buf.write("\3\2\2\2\u00c0\u00bb\3\2\2\2\u00c0\u00bf\3\2\2\2\u00c1")
-        buf.write("\35\3\2\2\2\u00c2\u00c4\7 \2\2\u00c3\u00c2\3\2\2\2\u00c3")
-        buf.write("\u00c4\3\2\2\2\u00c4\u00c5\3\2\2\2\u00c5\u00d3\5 \21\2")
-        buf.write("\u00c6\u00c7\7\4\2\2\u00c7\u00c8\5\22\n\2\u00c8\u00c9")
-        buf.write("\7\5\2\2\u00c9\u00d3\3\2\2\2\u00ca\u00d3\7\21\2\2\u00cb")
-        buf.write("\u00d3\7)\2\2\u00cc\u00cd\7\22\2\2\u00cd\u00ce\5\22\n")
-        buf.write("\2\u00ce\u00cf\5\34\17\2\u00cf\u00d0\7\23\2\2\u00d0\u00d3")
-        buf.write("\3\2\2\2\u00d1\u00d3\7$\2\2\u00d2\u00c3\3\2\2\2\u00d2")
-        buf.write("\u00c6\3\2\2\2\u00d2\u00ca\3\2\2\2\u00d2\u00cb\3\2\2\2")
-        buf.write("\u00d2\u00cc\3\2\2\2\u00d2\u00d1\3\2\2\2\u00d3\37\3\2")
-        buf.write("\2\2\u00d4\u00d5\t\3\2\2\u00d5!\3\2\2\2\u00d6\u00da\5")
-        buf.write("$\23\2\u00d7\u00d9\5$\23\2\u00d8\u00d7\3\2\2\2\u00d9\u00dc")
-        buf.write("\3\2\2\2\u00da\u00d8\3\2\2\2\u00da\u00db\3\2\2\2\u00db")
-        buf.write("#\3\2\2\2\u00dc\u00da\3\2\2\2\u00dd\u00e0\5(\25\2\u00de")
-        buf.write("\u00e0\5\22\n\2\u00df\u00dd\3\2\2\2\u00df\u00de\3\2\2")
-        buf.write("\2\u00e0%\3\2\2\2\u00e1\u00e2\7%\2\2\u00e2\u00e3\7\4\2")
-        buf.write("\2\u00e3\u00e4\5\22\n\2\u00e4\u00e5\5\34\17\2\u00e5\u00e6")
-        buf.write("\7\5\2\2\u00e6\'\3\2\2\2\u00e7\u00e8\5\n\6\2\u00e8\u00e9")
-        buf.write("\7%\2\2\u00e9\u00ea\7\25\2\2\u00ea\u00eb\5\22\n\2\u00eb")
-        buf.write("\u00ec\b\25\1\2\u00ec)\3\2\2\2\u00ed\u00ee\5,\27\2\u00ee")
-        buf.write("\u00ef\5.\30\2\u00ef\u00f0\b\26\1\2\u00f0\u00f1\7\2\2")
-        buf.write("\3\u00f1+\3\2\2\2\u00f2\u00f8\5\2\2\2\u00f3\u00f8\5&\24")
-        buf.write("\2\u00f4\u00f8\5(\25\2\u00f5\u00f8\5\22\n\2\u00f6\u00f8")
-        buf.write("\5\f\7\2\u00f7\u00f2\3\2\2\2\u00f7\u00f3\3\2\2\2\u00f7")
-        buf.write("\u00f4\3\2\2\2\u00f7\u00f5\3\2\2\2\u00f7\u00f6\3\2\2\2")
-        buf.write("\u00f8-\3\2\2\2\u00f9\u00fa\5,\27\2\u00fa\u00fb\5.\30")
-        buf.write("\2\u00fb\u00fe\3\2\2\2\u00fc\u00fe\3\2\2\2\u00fd\u00f9")
-        buf.write("\3\2\2\2\u00fd\u00fc\3\2\2\2\u00fe/\3\2\2\2\30AW\\aei")
-        buf.write("mu|\u0084\u0096\u009e\u00a9\u00b0\u00b9\u00c0\u00c3\u00d2")
-        buf.write("\u00da\u00df\u00f7\u00fd")
+        buf.write("\u00a2\t\2\2\2\u00a2\25\3\2\2\2\u00a3\u00a4\7\31\2\2\u00a4")
+        buf.write("\u00b0\b\f\1\2\u00a5\u00a6\7\32\2\2\u00a6\u00b0\b\f\1")
+        buf.write("\2\u00a7\u00a8\7\33\2\2\u00a8\u00b0\b\f\1\2\u00a9\u00aa")
+        buf.write("\7\34\2\2\u00aa\u00b0\b\f\1\2\u00ab\u00ac\7\35\2\2\u00ac")
+        buf.write("\u00b0\b\f\1\2\u00ad\u00ae\7\36\2\2\u00ae\u00b0\b\f\1")
+        buf.write("\2\u00af\u00a3\3\2\2\2\u00af\u00a5\3\2\2\2\u00af\u00a7")
+        buf.write("\3\2\2\2\u00af\u00a9\3\2\2\2\u00af\u00ab\3\2\2\2\u00af")
+        buf.write("\u00ad\3\2\2\2\u00b0\27\3\2\2\2\u00b1\u00bd\5\32\16\2")
+        buf.write("\u00b2\u00b3\7\37\2\2\u00b3\u00b4\b\r\1\2\u00b4\u00b5")
+        buf.write("\5\32\16\2\u00b5\u00b6\b\r\1\2\u00b6\u00bd\3\2\2\2\u00b7")
+        buf.write("\u00b8\7 \2\2\u00b8\u00b9\b\r\1\2\u00b9\u00ba\5\32\16")
+        buf.write("\2\u00ba\u00bb\b\r\1\2\u00bb\u00bd\3\2\2\2\u00bc\u00b1")
+        buf.write("\3\2\2\2\u00bc\u00b2\3\2\2\2\u00bc\u00b7\3\2\2\2\u00bd")
+        buf.write("\31\3\2\2\2\u00be\u00cf\5\36\20\2\u00bf\u00c0\7!\2\2\u00c0")
+        buf.write("\u00c1\b\16\1\2\u00c1\u00c2\5\36\20\2\u00c2\u00c3\b\16")
+        buf.write("\1\2\u00c3\u00cf\3\2\2\2\u00c4\u00c5\7\"\2\2\u00c5\u00c6")
+        buf.write("\b\16\1\2\u00c6\u00c7\5\36\20\2\u00c7\u00c8\b\16\1\2\u00c8")
+        buf.write("\u00cf\3\2\2\2\u00c9\u00ca\7#\2\2\u00ca\u00cb\b\16\1\2")
+        buf.write("\u00cb\u00cc\5\36\20\2\u00cc\u00cd\b\16\1\2\u00cd\u00cf")
+        buf.write("\3\2\2\2\u00ce\u00be\3\2\2\2\u00ce\u00bf\3\2\2\2\u00ce")
+        buf.write("\u00c4\3\2\2\2\u00ce\u00c9\3\2\2\2\u00cf\33\3\2\2\2\u00d0")
+        buf.write("\u00d1\7\13\2\2\u00d1\u00d2\5\22\n\2\u00d2\u00d3\5\34")
+        buf.write("\17\2\u00d3\u00d6\3\2\2\2\u00d4\u00d6\3\2\2\2\u00d5\u00d0")
+        buf.write("\3\2\2\2\u00d5\u00d4\3\2\2\2\u00d6\35\3\2\2\2\u00d7\u00d9")
+        buf.write("\7 \2\2\u00d8\u00d7\3\2\2\2\u00d8\u00d9\3\2\2\2\u00d9")
+        buf.write("\u00da\3\2\2\2\u00da\u00db\5 \21\2\u00db\u00dc\b\20\1")
+        buf.write("\2\u00dc\u00ed\3\2\2\2\u00dd\u00de\7\4\2\2\u00de\u00df")
+        buf.write("\b\20\1\2\u00df\u00e0\5\22\n\2\u00e0\u00e1\7\5\2\2\u00e1")
+        buf.write("\u00e2\b\20\1\2\u00e2\u00ed\3\2\2\2\u00e3\u00ed\7\21\2")
+        buf.write("\2\u00e4\u00e5\7)\2\2\u00e5\u00ed\b\20\1\2\u00e6\u00e7")
+        buf.write("\7\22\2\2\u00e7\u00e8\5\22\n\2\u00e8\u00e9\5\34\17\2\u00e9")
+        buf.write("\u00ea\7\23\2\2\u00ea\u00ed\3\2\2\2\u00eb\u00ed\7$\2\2")
+        buf.write("\u00ec\u00d8\3\2\2\2\u00ec\u00dd\3\2\2\2\u00ec\u00e3\3")
+        buf.write("\2\2\2\u00ec\u00e4\3\2\2\2\u00ec\u00e6\3\2\2\2\u00ec\u00eb")
+        buf.write("\3\2\2\2\u00ed\37\3\2\2\2\u00ee\u00ef\t\3\2\2\u00ef!\3")
+        buf.write("\2\2\2\u00f0\u00f4\5$\23\2\u00f1\u00f3\5$\23\2\u00f2\u00f1")
+        buf.write("\3\2\2\2\u00f3\u00f6\3\2\2\2\u00f4\u00f2\3\2\2\2\u00f4")
+        buf.write("\u00f5\3\2\2\2\u00f5#\3\2\2\2\u00f6\u00f4\3\2\2\2\u00f7")
+        buf.write("\u00fa\5(\25\2\u00f8\u00fa\5\22\n\2\u00f9\u00f7\3\2\2")
+        buf.write("\2\u00f9\u00f8\3\2\2\2\u00fa%\3\2\2\2\u00fb\u00fc\7%\2")
+        buf.write("\2\u00fc\u00fd\7\4\2\2\u00fd\u00fe\5\22\n\2\u00fe\u00ff")
+        buf.write("\5\34\17\2\u00ff\u0100\7\5\2\2\u0100\'\3\2\2\2\u0101\u0102")
+        buf.write("\5\n\6\2\u0102\u0103\7%\2\2\u0103\u0104\7\25\2\2\u0104")
+        buf.write("\u0105\5\22\n\2\u0105\u0106\b\25\1\2\u0106)\3\2\2\2\u0107")
+        buf.write("\u0108\5,\27\2\u0108\u0109\5.\30\2\u0109\u010a\b\26\1")
+        buf.write("\2\u010a\u010b\7\2\2\3\u010b+\3\2\2\2\u010c\u0112\5\2")
+        buf.write("\2\2\u010d\u0112\5&\24\2\u010e\u0112\5(\25\2\u010f\u0112")
+        buf.write("\5\22\n\2\u0110\u0112\5\f\7\2\u0111\u010c\3\2\2\2\u0111")
+        buf.write("\u010d\3\2\2\2\u0111\u010e\3\2\2\2\u0111\u010f\3\2\2\2")
+        buf.write("\u0111\u0110\3\2\2\2\u0112-\3\2\2\2\u0113\u0114\5,\27")
+        buf.write("\2\u0114\u0115\5.\30\2\u0115\u0118\3\2\2\2\u0116\u0118")
+        buf.write("\3\2\2\2\u0117\u0113\3\2\2\2\u0117\u0116\3\2\2\2\u0118")
+        buf.write("/\3\2\2\2\30AW\\aeimu|\u0084\u0096\u009e\u00af\u00bc\u00ce")
+        buf.write("\u00d5\u00d8\u00ec\u00f4\u00f9\u0111\u0117")
         return buf.getvalue()
 
 
@@ -235,6 +246,11 @@ class QuarkParser ( Parser ):
     VarRecord = namedtuple('VarRecord', ['type', 'dir', 'dim'])
     func_directory = {"global": FuncRecord('non', {})}
     current_function = "global"
+    PilaO = []
+    PTypes = []
+    POper = []
+    quadruples = []
+    temp = 0
     # Memory = namedtuple('Memory', ['number', 'value'])
     # memory = Memory()
 
@@ -1219,7 +1235,7 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.ComparatorContext(self, self._ctx, self.state)
         self.enterRule(localctx, 20, self.RULE_comparator)
         try:
-            self.state = 167
+            self.state = 173
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [QuarkParser.T__22]:
@@ -1227,36 +1243,42 @@ class QuarkParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 161
                 self.match(QuarkParser.T__22)
+                self.POper.append('>')
                 pass
             elif token in [QuarkParser.T__23]:
                 localctx = QuarkParser.LesserContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 162
+                self.state = 163
                 self.match(QuarkParser.T__23)
+                self.POper.append('<')
                 pass
             elif token in [QuarkParser.T__24]:
                 localctx = QuarkParser.EqualContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 163
+                self.state = 165
                 self.match(QuarkParser.T__24)
+                self.POper.append('=')
                 pass
             elif token in [QuarkParser.T__25]:
                 localctx = QuarkParser.GreaterEqualContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
-                self.state = 164
+                self.state = 167
                 self.match(QuarkParser.T__25)
+                self.POper.append('>=')
                 pass
             elif token in [QuarkParser.T__26]:
                 localctx = QuarkParser.LesserEqualContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
-                self.state = 165
+                self.state = 169
                 self.match(QuarkParser.T__26)
+                self.POper.append('<=')
                 pass
             elif token in [QuarkParser.T__27]:
                 localctx = QuarkParser.NotEqualContext(self, localctx)
                 self.enterOuterAlt(localctx, 6)
-                self.state = 166
+                self.state = 171
                 self.match(QuarkParser.T__27)
+                self.POper.append('!=')
                 pass
             else:
                 raise NoViableAltException(self)
@@ -1348,32 +1370,54 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.ExpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 22, self.RULE_exp)
         try:
-            self.state = 174
+            self.state = 186
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,13,self._ctx)
             if la_ == 1:
                 localctx = QuarkParser.JustTermContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 169
+                self.state = 175
                 self.term()
                 pass
 
             elif la_ == 2:
                 localctx = QuarkParser.AdditionContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 170
+                self.state = 176
                 self.match(QuarkParser.T__28)
-                self.state = 171
+                self.POper.append('+')
+                self.state = 178
                 self.term()
+
+                if self.POper[-1] == "+":
+                  right_operand = self.PilaO.pop()
+                  left_operand = self.PilaO.pop()
+                  operator = self.POper.pop()
+                  self.temp = self.temp + 1
+                  # TODO: Check types
+                  self.quadruples.append((operator, left_operand, right_operand, self.temp))
+                  self.PilaO.append(self.temp)
+
                 pass
 
             elif la_ == 3:
                 localctx = QuarkParser.SubstractionContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 172
+                self.state = 181
                 self.match(QuarkParser.T__29)
-                self.state = 173
+                self.POper.append('-')
+                self.state = 183
                 self.term()
+
+                if self.POper[-1] == "-":
+                  right_operand = self.PilaO.pop()
+                  left_operand = self.PilaO.pop()
+                  operator = self.POper.pop()
+                  self.temp = self.temp + 1
+                  # TODO: Check types
+                  self.quadruples.append((operator, left_operand, right_operand, self.temp))
+                  self.PilaO.append(self.temp)
+
                 pass
 
 
@@ -1483,38 +1527,71 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.TermContext(self, self._ctx, self.state)
         self.enterRule(localctx, 24, self.RULE_term)
         try:
-            self.state = 183
+            self.state = 204
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [QuarkParser.T__1, QuarkParser.T__14, QuarkParser.T__15, QuarkParser.T__29, QuarkParser.T__33, QuarkParser.ID, QuarkParser.CONST_I, QuarkParser.CONST_F, QuarkParser.STRING]:
                 localctx = QuarkParser.JustFactorContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 176
+                self.state = 188
                 self.factor()
                 pass
             elif token in [QuarkParser.T__30]:
                 localctx = QuarkParser.MultiplicationContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 177
+                self.state = 189
                 self.match(QuarkParser.T__30)
-                self.state = 178
+                self.POper.append('*')
+                self.state = 191
                 self.factor()
+
+                if self.POper[-1] == "*":
+                  right_operand = self.PilaO.pop()
+                  left_operand = self.PilaO.pop()
+                  operator = self.POper.pop()
+                  self.temp = self.temp + 1
+                  # TODO: Check types
+                  self.quadruples.append((operator, left_operand, right_operand, self.temp))
+                  self.PilaO.append(self.temp)
+
                 pass
             elif token in [QuarkParser.T__31]:
                 localctx = QuarkParser.DivisionContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 179
+                self.state = 194
                 self.match(QuarkParser.T__31)
-                self.state = 180
+                self.POper.append('/')
+                self.state = 196
                 self.factor()
+
+                if self.POper[-1] == "/":
+                  right_operand = self.PilaO.pop()
+                  left_operand = self.PilaO.pop()
+                  operator = self.POper.pop()
+                  self.temp = self.temp + 1
+                  # TODO: Check types
+                  self.quadruples.append((operator, left_operand, right_operand, self.temp))
+                  self.PilaO.append(self.temp)
+
                 pass
             elif token in [QuarkParser.T__32]:
                 localctx = QuarkParser.ModuloContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
-                self.state = 181
+                self.state = 199
                 self.match(QuarkParser.T__32)
-                self.state = 182
+                self.POper.append('%')
+                self.state = 201
                 self.factor()
+
+                if self.POper[-1] == "%":
+                  right_operand = self.PilaO.pop()
+                  left_operand = self.PilaO.pop()
+                  operator = self.POper.pop()
+                  self.temp = self.temp + 1
+                  # TODO: Check types
+                  self.quadruples.append((operator, left_operand, right_operand, self.temp))
+                  self.PilaO.append(self.temp)
+
                 pass
             else:
                 raise NoViableAltException(self)
@@ -1560,16 +1637,16 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.More_expressionsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 26, self.RULE_more_expressions)
         try:
-            self.state = 190
+            self.state = 211
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [QuarkParser.T__8]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 185
+                self.state = 206
                 self.match(QuarkParser.T__8)
-                self.state = 186
+                self.state = 207
                 self.expression(0)
-                self.state = 187
+                self.state = 208
                 self.more_expressions()
                 pass
             elif token in [QuarkParser.T__2, QuarkParser.T__16]:
@@ -1592,6 +1669,8 @@ class QuarkParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
+            self._varconst = None # VarconstContext
+            self._STRING = None # Token
 
         def varconst(self):
             return self.getTypedRuleContext(QuarkParser.VarconstContext,0)
@@ -1628,55 +1707,59 @@ class QuarkParser ( Parser ):
         self.enterRule(localctx, 28, self.RULE_factor)
         self._la = 0 # Token type
         try:
-            self.state = 208
+            self.state = 234
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [QuarkParser.T__29, QuarkParser.ID, QuarkParser.CONST_I, QuarkParser.CONST_F]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 193
+                self.state = 214
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if _la==QuarkParser.T__29:
-                    self.state = 192
+                    self.state = 213
                     self.match(QuarkParser.T__29)
 
 
-                self.state = 195
-                self.varconst()
+                self.state = 216
+                localctx._varconst = self.varconst()
+                self.PilaO.append((None if localctx._varconst is None else self._input.getText((localctx._varconst.start,localctx._varconst.stop))))
                 pass
             elif token in [QuarkParser.T__1]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 196
+                self.state = 219
                 self.match(QuarkParser.T__1)
-                self.state = 197
+                self.POper.append('(')
+                self.state = 221
                 self.expression(0)
-                self.state = 198
+                self.state = 222
                 self.match(QuarkParser.T__2)
+                self.POper.append(')')
                 pass
             elif token in [QuarkParser.T__14]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 200
+                self.state = 225
                 self.match(QuarkParser.T__14)
                 pass
             elif token in [QuarkParser.STRING]:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 201
-                self.match(QuarkParser.STRING)
+                self.state = 226
+                localctx._STRING = self.match(QuarkParser.STRING)
+                self.POper.append((None if localctx._STRING is None else localctx._STRING.text))
                 pass
             elif token in [QuarkParser.T__15]:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 202
+                self.state = 228
                 self.match(QuarkParser.T__15)
-                self.state = 203
+                self.state = 229
                 self.expression(0)
-                self.state = 204
+                self.state = 230
                 self.more_expressions()
-                self.state = 205
+                self.state = 231
                 self.match(QuarkParser.T__16)
                 pass
             elif token in [QuarkParser.T__33]:
                 self.enterOuterAlt(localctx, 6)
-                self.state = 207
+                self.state = 233
                 self.match(QuarkParser.T__33)
                 pass
             else:
@@ -1726,7 +1809,7 @@ class QuarkParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 210
+            self.state = 236
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << QuarkParser.ID) | (1 << QuarkParser.CONST_I) | (1 << QuarkParser.CONST_F))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -1775,15 +1858,15 @@ class QuarkParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 212
+            self.state = 238
             self.statement()
-            self.state = 216
+            self.state = 242
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << QuarkParser.T__1) | (1 << QuarkParser.T__9) | (1 << QuarkParser.T__11) | (1 << QuarkParser.T__12) | (1 << QuarkParser.T__13) | (1 << QuarkParser.T__14) | (1 << QuarkParser.T__15) | (1 << QuarkParser.T__20) | (1 << QuarkParser.T__21) | (1 << QuarkParser.T__28) | (1 << QuarkParser.T__29) | (1 << QuarkParser.T__30) | (1 << QuarkParser.T__31) | (1 << QuarkParser.T__32) | (1 << QuarkParser.T__33) | (1 << QuarkParser.ID) | (1 << QuarkParser.TYPE_ID) | (1 << QuarkParser.CONST_I) | (1 << QuarkParser.CONST_F) | (1 << QuarkParser.STRING))) != 0):
-                self.state = 213
+                self.state = 239
                 self.statement()
-                self.state = 218
+                self.state = 244
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1828,18 +1911,18 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.StatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 34, self.RULE_statement)
         try:
-            self.state = 221
+            self.state = 247
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,19,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 219
+                self.state = 245
                 self.assignment()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 220
+                self.state = 246
                 self.expression(0)
                 pass
 
@@ -1889,15 +1972,15 @@ class QuarkParser ( Parser ):
         self.enterRule(localctx, 36, self.RULE_func_call)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 223
+            self.state = 249
             self.match(QuarkParser.ID)
-            self.state = 224
+            self.state = 250
             self.match(QuarkParser.T__1)
-            self.state = 225
+            self.state = 251
             self.expression(0)
-            self.state = 226
+            self.state = 252
             self.more_expressions()
-            self.state = 227
+            self.state = 253
             self.match(QuarkParser.T__2)
         except RecognitionException as re:
             localctx.exception = re
@@ -1946,13 +2029,13 @@ class QuarkParser ( Parser ):
         self.enterRule(localctx, 38, self.RULE_assignment)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 229
+            self.state = 255
             localctx._typeRule = self.typeRule()
-            self.state = 230
+            self.state = 256
             localctx._ID = self.match(QuarkParser.ID)
-            self.state = 231
+            self.state = 257
             self.match(QuarkParser.T__18)
-            self.state = 232
+            self.state = 258
             self.expression(0)
 
             print(type(localctx.parentCtx))
@@ -2004,12 +2087,12 @@ class QuarkParser ( Parser ):
         self.enterRule(localctx, 40, self.RULE_main)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 235
+            self.state = 261
             self.things()
-            self.state = 236
+            self.state = 262
             self.morethings()
-            print(self.func_directory)
-            self.state = 238
+            print(self.func_directory); print(self.quadruples)
+            self.state = 264
             self.match(QuarkParser.EOF)
         except RecognitionException as re:
             localctx.exception = re
@@ -2064,36 +2147,36 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.ThingsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 42, self.RULE_things)
         try:
-            self.state = 245
+            self.state = 271
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,20,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 240
+                self.state = 266
                 self.function()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 241
+                self.state = 267
                 self.func_call()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 242
+                self.state = 268
                 self.assignment()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 243
+                self.state = 269
                 self.expression(0)
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 244
+                self.state = 270
                 self.typedef()
                 pass
 
@@ -2139,14 +2222,14 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.MorethingsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 44, self.RULE_morethings)
         try:
-            self.state = 251
+            self.state = 277
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [QuarkParser.T__0, QuarkParser.T__1, QuarkParser.T__9, QuarkParser.T__11, QuarkParser.T__12, QuarkParser.T__13, QuarkParser.T__14, QuarkParser.T__15, QuarkParser.T__17, QuarkParser.T__20, QuarkParser.T__21, QuarkParser.T__28, QuarkParser.T__29, QuarkParser.T__30, QuarkParser.T__31, QuarkParser.T__32, QuarkParser.T__33, QuarkParser.ID, QuarkParser.TYPE_ID, QuarkParser.CONST_I, QuarkParser.CONST_F, QuarkParser.STRING]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 247
+                self.state = 273
                 self.things()
-                self.state = 248
+                self.state = 274
                 self.morethings()
                 pass
             elif token in [QuarkParser.EOF]:
