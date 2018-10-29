@@ -1,6 +1,19 @@
 grammar Quark;
 
-ID: [a-z][a-zA-Z0-9_]*;
+@header {
+from collections import namedtuple
+}
+
+@parser::members {
+FuncRecord = namedtuple('FuncRecord', ['type', 'vars'])
+VarRecord = namedtuple('VarRecord', ['type', 'dir', 'dim'])
+func_directory = {"global": FuncRecord('non', {})}
+current_function = "global"
+# Memory = namedtuple('Memory', ['number', 'value'])
+# memory = Memory()
+}
+
+ID:[a-z][a-zA-Z0-9_]*;
 TYPE_ID: [A-Z][a-zA-Z0-9_]*;
 CONST_I: [0-9]+;
 CONST_F: [0-9]+ [.][0-9]+;
@@ -8,9 +21,15 @@ STRING: ["].*? ["];
 SPACE: [\t\n\r\f ]+ -> skip;
 
 function:
-	'def' ID '(' params ')' '->' typeRule '{' (
-		cond '{' block '}'
-	)* 'default {' block '}' '}';
+	'def' ID '(' params ')' '->' typeRule {
+ident = $ID.text
+self.current_function = ident
+ret_type = $typeRule.text
+if ident in self.func_directory:
+  raise Exception("Function {} already defined".format(ident))
+else:
+	self.func_directory[ident] = self.FuncRecord(ret_type, {})
+} '{' (cond '{' block '}')* 'default {' block '}' '}';
 params: ID ':' typeRule moreparams;
 moreparams: ',' ID ':' typeRule |;
 moreTypes: ',' typeRule |;
@@ -63,9 +82,13 @@ block: statement (statement)*;
 
 statement: assignment | expression;
 func_call: ID '(' expression more_expressions ')';
-assignment: typeRule ID '<-' expression;
-main: things morethings EOF;
-
+assignment:
+	typeRule ID '<-' expression {
+print(type($ctx.parentCtx))
+if $ID.text not in self.func_directory[self.current_function]:
+  self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
+};
+main: things morethings {print(self.func_directory)} EOF;
 things:
 	function
 	| func_call

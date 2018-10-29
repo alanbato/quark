@@ -1,4 +1,7 @@
 // Generated from /Users/ebarragan/Library/Mobile Documents/com~apple~CloudDocs/Tec de Monterrey/Compiladores/quark/Quark.g4 by ANTLR 4.7.1
+
+from collections import namedtuple
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
