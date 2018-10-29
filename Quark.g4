@@ -21,17 +21,25 @@ STRING: ["].*? ["];
 SPACE: [\t\n\r\f ]+ -> skip;
 
 function:
-	'def' ID '(' params ')' '->' typeRule {
+	'def' ID {
 ident = $ID.text
 self.current_function = ident
-ret_type = $typeRule.text
 if ident in self.func_directory:
   raise Exception("Function {} already defined".format(ident))
 else:
-	self.func_directory[ident] = self.FuncRecord(ret_type, {})
-} '{' (cond '{' block '}')* 'default {' block '}' '}';
-params: ID ':' typeRule moreparams;
-moreparams: ',' ID ':' typeRule |;
+	self.func_directory[ident] = self.FuncRecord(None, {})
+} '(' params ')' '->' typeRule {
+ident = $ID.text
+ret_type = $typeRule.text
+self.func_directory[ident] = self.func_directory[ident]._replace(type=ret_type)
+} '{' (cond '{' block '}')* 'default {' block '}' '}' {self.current_function = "global"};
+params:
+	ID ':' typeRule {self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
+		} moreparams;
+moreparams:
+	',' ID ':' typeRule {self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
+		}
+	|;
 moreTypes: ',' typeRule |;
 typeRule:
 	TYPE_ID							# UserType
