@@ -8,6 +8,7 @@ from collections import namedtuple
 FuncRecord = namedtuple('FuncRecord', ['type', 'vars'])
 VarRecord = namedtuple('VarRecord', ['type', 'dir', 'dim'])
 func_directory = {"global": FuncRecord('non', {})}
+type_directory = {}
 current_function = "global"
 PilaO = []
 PTypes = []
@@ -47,15 +48,24 @@ moreparams:
 	|;
 moreTypes: ',' typeRule |;
 typeRule:
-	TYPE_ID							# UserType
+	TYPE_ID	{
+if $TYPE_ID.text not in self.type_directory:
+	raise Exception("Undefined type {}".format($TYPE_ID.text))
+	} 								# UserType
 	| 'Int' '?'?					# Int
 	| 'Bool' '?'?					# Boolean
 	| 'Float' '?'?					# Float
 	| 'String' '?'?					# String
 	| 'non'							# None
 	| '[' typeRule moreTypes ']'	# ListOfType;
-typedef: 'type' TYPE_ID '<-' (typeRule | typeset);
-typeset: '(' typeRule ('|' typeRule)* ')';
+typedef: 'type' TYPE_ID '<-' typevalue {
+#TODO: This typevalue.text should be replaced by either the aliased type or a list of known types.
+self.type_directory[TYPE_ID] = typevalue.text
+};
+typevalue: typeRule
+	| typeset
+	;
+typeset: '(' typeRule ('|' typeRule)* ')' {#TODO: This should return the list of defined types};
 cond: '(' expression more_expressions ')';
 expression:
 	boolRule
