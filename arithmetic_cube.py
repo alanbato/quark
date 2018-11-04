@@ -7,6 +7,7 @@ BOOL = "Bool"
 NON = "non"
 TYPE_ERROR = "Operator {} not defined for types {} and {}"
 
+
 def check_operation_type(op, t1, t2):
     if op == "+":
         if t1 == STRING and t2 == STRING:
