@@ -8,7 +8,7 @@ else:
 from collections import namedtuple
 from arithmetic_cube import check_operation_type
 import pprint
-pp = pprint.PrettyPrinter(indent=4)
+pp = pprint.PrettyPrinter()
 
 
 # This class defines a complete listener for a parse tree produced by QuarkParser.
@@ -167,12 +167,30 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#boolRule.
-    def enterBoolRule(self, ctx:QuarkParser.BoolRuleContext):
+    # Enter a parse tree produced by QuarkParser#JustTerm.
+    def enterJustTerm(self, ctx:QuarkParser.JustTermContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#boolRule.
-    def exitBoolRule(self, ctx:QuarkParser.BoolRuleContext):
+    # Exit a parse tree produced by QuarkParser#JustTerm.
+    def exitJustTerm(self, ctx:QuarkParser.JustTermContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#Addition.
+    def enterAddition(self, ctx:QuarkParser.AdditionContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#Addition.
+    def exitAddition(self, ctx:QuarkParser.AdditionContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#Substraction.
+    def enterSubstraction(self, ctx:QuarkParser.SubstractionContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#Substraction.
+    def exitSubstraction(self, ctx:QuarkParser.SubstractionContext):
         pass
 
 
@@ -227,33 +245,6 @@ class QuarkListener(ParseTreeListener):
 
     # Exit a parse tree produced by QuarkParser#NotEqual.
     def exitNotEqual(self, ctx:QuarkParser.NotEqualContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#JustTerm.
-    def enterJustTerm(self, ctx:QuarkParser.JustTermContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#JustTerm.
-    def exitJustTerm(self, ctx:QuarkParser.JustTermContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Addition.
-    def enterAddition(self, ctx:QuarkParser.AdditionContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Addition.
-    def exitAddition(self, ctx:QuarkParser.AdditionContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Substraction.
-    def enterSubstraction(self, ctx:QuarkParser.SubstractionContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Substraction.
-    def exitSubstraction(self, ctx:QuarkParser.SubstractionContext):
         pass
 
 

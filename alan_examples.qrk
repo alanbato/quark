@@ -1,55 +1,56 @@
 def fizz_buzz(n: Int, m: Int) -> non {
 	(n = m) {
-		non
+		non;
 	}
 	(n % 3 = 0, n % 5 = 0) {
-		print("FizzBuzz")
+		print("FizzBuzz");
 	}
 	(n % 3 = 0) {
-    	print("Fizz")
+    	print("Fizz");
 	}
 	(n % 5 = 0) {
-    	print("Buzz")
+    	print("Buzz");
 	}
 	default {
-    	print(n)
-    	Int y <- n + 1 - 2 / 3 * (5 + 4)
-    	fizz_buzz(y, m)
+    	print(n);
+    	Int y <- n + 1 - 2 / 3 * (5 + 4);
+    	fizz_buzz(m, m);
+      Int w <- 1 + 2;
+      w;
 	}
 }
 
 def shout(s: String) -> String {
 	default {
-		upper(s)
+		upper(s);
 	}
 }
 
 def n_times(x: Any, n: Int) -> [Any] {
     (n <= 0) {
-        []
+        [];
 	}
     default {
-        Int m <- n - 1
-        append(x, n_times(x, m))
+        Int m <- n - 1;
+        append(x, n_times(x, m));
 	}
 }
-
 def say_things(x: [Any]) -> non {
     (x = []) {
-        non
+        non;
 	}
     default {
-        Any y <- head(x)
-        Any xs <- tail(x)
-        print(y)
-        say_things(xs)
+        Any y <- head(x);
+        Any xs <- tail(x);
+        print(y);
+        say_things(xs);
 	}
 }
 
 
-say_things(n_times(shout("hello!"), 3))
+say_things(n_times(shout("hello!"), 3));
 
-type Rectangle <- [Float, Float]
-type Triangle <- [Float]
-type Circle <- [Float]
-type Shape <- (Rectangle | Triangle | Circle)
+type Rectangle <- [Float, Float];
+type Triangle <- [Float];
+type Circle <- [Float];
+type Shape <- (Rectangle | Triangle | Circle);

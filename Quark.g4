@@ -4,7 +4,7 @@ grammar Quark;
 from collections import namedtuple
 from arithmetic_cube import check_operation_type
 import pprint
-pp = pprint.PrettyPrinter(indent=4)
+pp = pprint.PrettyPrinter()
 }
 
 @parser::members {
@@ -21,12 +21,20 @@ func_directory = {
 type_directory = {}
 current_function = "global"
 PilaO = []
-PTypes = []
 POper = []
 quadruples = []
 temp = 0
 # Memory = namedtuple('Memory', ['number', 'value'])
 # memory = Memory()
+
+def handle_operation(self):
+  right_operand, right_type = self.PilaO.pop()
+  left_operand, left_type = self.PilaO.pop()
+  operator = self.POper.pop()
+  self.temp = self.temp + 1
+  return_type = check_operation_type(operator, left_type, right_type)
+  self.quadruples.append((operator, left_operand, right_operand, self.temp))
+  self.PilaO.append((self.temp, return_type))
 }
 
 ID:[a-z][a-zA-Z0-9_]*;
@@ -34,7 +42,7 @@ TYPE_ID: [A-Z][a-zA-Z0-9_]*;
 CONST_I: [0-9]+;
 CONST_F: [0-9]+ [.][0-9]+;
 STRING: ["].*? ["];
-SPACE: [\t\n\r\f ]+ -> skip;
+SPACE: [\t\r\f\n ]+ -> skip;
 
 function:
 	'def' ID {
@@ -48,7 +56,11 @@ else:
 ident = $ID.text
 ret_type = $typeRule.text
 self.func_directory[ident] = self.func_directory[ident]._replace(type=ret_type)
-} '{' (cond '{' block '}')* 'default {' block '}' '}' {self.current_function = "global"};
+} '{' (cond '{' block '}')* 'default {' block '}' '}' {
+self.current_function = "global"
+self.PilaO = []
+self.POper = []
+};
 params:
 	ID ':' typeRule {self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
     } moreparams;
@@ -78,83 +90,69 @@ self.type_directory[$TYPE_ID.text] = $typevalue.text
 typeset:
 	'(' typeRule ('|' typeRule)* ')' {#TODO: This should return the list of defined types};
 cond: '(' expression more_expressions ')';
-expression:
-	func_call
-	| boolRule
-	| exp expression
-	| exp
-	| expression comparator expression
-	| 'non';
-boolRule: 'True' | 'False' | ID;
-comparator:
-	'>' {self.POper.append('>')}		# Greater
-	| '<' {self.POper.append('<')}		# Lesser
-	| '=' {self.POper.append('=')}		# Equal
-	| '>=' {self.POper.append('>=')}	# GreaterEqual
-	| '<=' {self.POper.append('<=')}	# LesserEqual
-	| '!=' {self.POper.append('!=')}	# NotEqual;
+expression: func_call | exp expression | exp | 'non';
 exp:
 	term # JustTerm
 	| '+' {self.POper.append('+')} term {
 if self.POper[-1] == "+":
-  right_operand, right_type = self.PilaO.pop()
-  left_operand, left_type = self.PilaO.pop()
-  operator = self.POper.pop()
-  self.temp = self.temp + 1
-  return_type = check_operation_type(operator, left_type, right_type)
-  self.quadruples.append((operator, left_operand, right_operand, self.temp))
-  self.PilaO.append(self.temp)
+  self.handle_operation()
 } # Addition
 	| '-' {self.POper.append('-')} term {
 if self.POper[-1] == "-":
-  right_operand, right_type = self.PilaO.pop()
-  left_operand, left_type = self.PilaO.pop()
-  operator = self.POper.pop()
-  self.temp = self.temp + 1
-  return_type = check_operation_type(operator, left_type, right_type)
-  self.quadruples.append((operator, left_operand, right_operand, self.temp))
-  self.PilaO.append(self.temp)
-} # Substraction;
+  self.handle_operation()
+} # Substraction
+	| '>' {self.POper.append('>')} term {
+if self.POper[-1] == ">":
+  self.handle_operation()
+} # Greater
+	| '<' {self.POper.append('<')} term {
+if self.POper[-1] == "<":
+  self.handle_operation()
+} # Lesser
+	| '=' {self.POper.append('=')} term {
+if self.POper[-1] == "=":
+  self.handle_operation()
+} # Equal
+	| '>=' {self.POper.append('>=')} term {
+if self.POper[-1] == ">=":
+  self.handle_operation()
+} # GreaterEqual
+	| '<=' {self.POper.append('<=')} term {
+if self.POper[-1] == "<=":
+  self.handle_operation()
+} # LesserEqual
+	| '!=' {self.POper.append('!=')} term {
+if self.POper[-1] == "!=":
+  self.handle_operation()
+} # NotEqual;
 term:
 	factor # JustFactor
 	| '*' {self.POper.append('*')} factor {
 if self.POper[-1] == "*":
-  right_operand, right_type = self.PilaO.pop()
-  left_operand, left_type = self.PilaO.pop()
-  operator = self.POper.pop()
-  self.temp = self.temp + 1
-  return_type = check_operation_type(operator, left_type, right_type)
-  self.quadruples.append((operator, left_operand, right_operand, self.temp))
-  self.PilaO.append(self.temp)
+  self.handle_operation()
 } # Multiplication
 	| '/' {self.POper.append('/')} factor {
 if self.POper[-1] == "/":
-  right_operand, right_type = self.PilaO.pop()
-  left_operand, left_type = self.PilaO.pop()
-  operator = self.POper.pop()
-  self.temp = self.temp + 1
-  return_type = check_operation_type(operator, left_type, right_type)
-  self.quadruples.append((operator, left_operand, right_operand, self.temp))
-  self.PilaO.append(self.temp)
+  self.handle_operation()
 } # Division
 	| '%' {self.POper.append('%')} factor {
 if self.POper[-1] == "%":
-  right_operand, right_type = self.PilaO.pop()
-  left_operand, left_type = self.PilaO.pop()
-  operator = self.POper.pop()
-  return_type = check_operation_type(operator, left_type, right_type)
-  self.temp = self.temp + 1
-  self.quadruples.append((operator, left_operand, right_operand, self.temp))
-  self.PilaO.append(self.temp)
+  self.handle_operation()
 } # Modulo;
 more_expressions: ',' expression more_expressions |;
 factor:
 	'-'? varconst
-	| '(' {self.POper.append('(')} expression ')' {self.POper.append(')')}
-	| 'non'
-	| STRING {self.POper.append($STRING.text); self.PTypes.append("String")}
+	| '(' {self.POper.append('(')} expression ')' {
+if self.POper[-1] == '(':
+  self.POper.pop()
+else:
+  raise Exception("Parenthesis mismatch")
+}
+	| 'True' {self.PilaO.append(('True', "Bool"))}
+	| 'False' {self.PilaO.append(('False', "Bool"))}
+	| STRING {self.PilaO.append(($STRING.text, "String"))}
 	| '[' expression more_expressions ']'
-	| '[]';
+	| '[]' {self.PilaO.append(('[]', "[Any]"))};
 varconst:
 	ID {
 if $ID.text not in self.func_directory[self.current_function].vars:
@@ -166,7 +164,7 @@ self.PilaO.append(($ID.text, self.func_directory[self.current_function].vars[$ID
 
 block: statement (statement)*;
 
-statement: assignment | expression;
+statement: assignment ';' | expression ';';
 func_call:
 	ID {
 if $ID.text not in self.func_directory:
@@ -176,13 +174,15 @@ assignment:
 	typeRule ID '<-' expression {
 if $ID.text not in self.func_directory[self.current_function]:
   self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
+else:
+  raise Exception("Cannot declare type again")
 };
 main:
 	things morethings {pp.pprint(self.func_directory); pp.pprint(self.quadruples)} EOF;
 things:
 	function
-	| func_call
+	| func_call ';'
 	| assignment
 	| expression
-	| typedef;
+	| typedef ';';
 morethings: things morethings |;
