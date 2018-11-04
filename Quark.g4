@@ -23,6 +23,7 @@ current_function = "global"
 PilaO = []
 POper = []
 quadruples = []
+gotos = []
 temp = 0
 # Memory = namedtuple('Memory', ['number', 'value'])
 # memory = Memory()
@@ -31,10 +32,10 @@ def handle_operation(self):
   right_operand, right_type = self.PilaO.pop()
   left_operand, left_type = self.PilaO.pop()
   operator = self.POper.pop()
-  self.temp = self.temp + 1
   return_type = check_operation_type(operator, left_type, right_type)
   self.quadruples.append((operator, left_operand, right_operand, self.temp))
   self.PilaO.append((self.temp, return_type))
+  self.temp = self.temp + 1
 }
 
 ID:[a-z][a-zA-Z0-9_]*;
@@ -56,7 +57,17 @@ else:
 ident = $ID.text
 ret_type = $typeRule.text
 self.func_directory[ident] = self.func_directory[ident]._replace(type=ret_type)
-} '{' (cond '{' block '}')* 'default {' block '}' '}' {
+} '{' (
+		cond '{' block '}' {
+ident = self.gotos.pop()
+tmp = list(self.quadruples[ident])
+tmp[3] = len(self.quadruples) - 1
+self.quadruples[ident] = tuple(tmp)
+self.quadruples.append(("RETURN", "", "", ""))
+self.quadruples.append(("GOTO", "", "", ""))
+}
+	)* 'default {' block '}' '}' {
+self.quadruples.append(("ENDPROC", "", "", ""))
 self.current_function = "global"
 self.PilaO = []
 self.POper = []
@@ -89,7 +100,13 @@ self.type_directory[$TYPE_ID.text] = $typevalue.text
 };
 typeset:
 	'(' typeRule ('|' typeRule)* ')' {#TODO: This should return the list of defined types};
-cond: '(' expression more_expressions ')';
+cond:
+	'(' expression more_expressions ')' {
+index = len(self.quadruples) - 1
+self.quadruples.append(("GOTOF", index, "", ""))
+self.gotos.append(index + 1)
+self.temp = self.temp + 1
+};
 expression: func_call | exp expression | exp | 'non';
 exp:
 	term # JustTerm
@@ -169,16 +186,23 @@ func_call:
 	ID {
 if $ID.text not in self.func_directory:
   raise Exception("Function {} does not exist".format($ID.text))
-} '(' expression more_expressions ')';
+} '(' expression more_expressions ')' {
+self.quadruples.append(($ID.text, "", "", ""))
+};
 assignment:
 	typeRule ID '<-' expression {
 if $ID.text not in self.func_directory[self.current_function]:
   self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
 else:
   raise Exception("Cannot declare type again")
+self.quadruples.append(('ASSIGN', '', '', $ID.text))
 };
 main:
-	things morethings {pp.pprint(self.func_directory); pp.pprint(self.quadruples)} EOF;
+	things morethings {
+pp.pprint(self.func_directory)
+for i, val in enumerate(self.quadruples): 
+  print(i, val)
+} EOF;
 things:
 	function
 	| func_call ';'

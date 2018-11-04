@@ -1,0 +1,5 @@
+- Ya especificar las variables temporales donde se guarda cada cuádruplo
+- Agregar cuádruplos para expresión solita (non, [], etc)
+- Manejar el número del GOTO donde está el ENDPROC
+- Manejar los parámetros en la función en los cuádruplos
+- Corregir la solución de GOTOS, creo que está desfazada
