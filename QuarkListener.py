@@ -6,6 +6,9 @@ else:
     from QuarkParser import QuarkParser
 
 from collections import namedtuple
+from arithmetic_cube import check_operation_type
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 
 # This class defines a complete listener for a parse tree produced by QuarkParser.
@@ -101,12 +104,30 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by QuarkParser#Any.
+    def enterAny(self, ctx:QuarkParser.AnyContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#Any.
+    def exitAny(self, ctx:QuarkParser.AnyContext):
+        pass
+
+
     # Enter a parse tree produced by QuarkParser#ListOfType.
     def enterListOfType(self, ctx:QuarkParser.ListOfTypeContext):
         pass
 
     # Exit a parse tree produced by QuarkParser#ListOfType.
     def exitListOfType(self, ctx:QuarkParser.ListOfTypeContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#typevalue.
+    def enterTypevalue(self, ctx:QuarkParser.TypevalueContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#typevalue.
+    def exitTypevalue(self, ctx:QuarkParser.TypevalueContext):
         pass
 
 

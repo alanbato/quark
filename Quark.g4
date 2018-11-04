@@ -2,12 +2,22 @@ grammar Quark;
 
 @header {
 from collections import namedtuple
+from arithmetic_cube import check_operation_type
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 }
 
 @parser::members {
 FuncRecord = namedtuple('FuncRecord', ['type', 'vars'])
 VarRecord = namedtuple('VarRecord', ['type', 'dir', 'dim'])
-func_directory = {"global": FuncRecord('non', {})}
+func_directory = {
+  "global": FuncRecord('non', {}), 
+  "append": FuncRecord('[Any]', {}),
+  "print": FuncRecord('none', {}),
+  "upper": FuncRecord('String', {}),
+  "head": FuncRecord('Any', {}),
+  "tail": FuncRecord('[Any]', {})
+}
 type_directory = {}
 current_function = "global"
 PilaO = []
@@ -33,7 +43,7 @@ self.current_function = ident
 if ident in self.func_directory:
   raise Exception("Function {} already defined".format(ident))
 else:
-	self.func_directory[ident] = self.FuncRecord(None, {})
+  self.func_directory[ident] = self.FuncRecord(None, {})
 } '(' params ')' '->' typeRule {
 ident = $ID.text
 ret_type = $typeRule.text
@@ -41,39 +51,40 @@ self.func_directory[ident] = self.func_directory[ident]._replace(type=ret_type)
 } '{' (cond '{' block '}')* 'default {' block '}' '}' {self.current_function = "global"};
 params:
 	ID ':' typeRule {self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
-		} moreparams;
+    } moreparams;
 moreparams:
 	',' ID ':' typeRule {self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
-		}
+    }
 	|;
 moreTypes: ',' typeRule |;
 typeRule:
-	TYPE_ID	{
+	TYPE_ID {
 if $TYPE_ID.text not in self.type_directory:
-	raise Exception("Undefined type {}".format($TYPE_ID.text))
-	} 								# UserType
-	| 'Int' '?'?					# Int
-	| 'Bool' '?'?					# Boolean
-	| 'Float' '?'?					# Float
-	| 'String' '?'?					# String
-	| 'non'							# None
-	| '[' typeRule moreTypes ']'	# ListOfType;
-typedef: 'type' TYPE_ID '<-' typevalue {
-#TODO: This typevalue.text should be replaced by either the aliased type or a list of known types.
-self.type_directory[TYPE_ID] = typevalue.text
+  raise Exception("Undefined type {}".format($TYPE_ID.text))
+  }	# UserType
+	| 'Int' '?'?																											# Int
+	| 'Bool' '?'?																											# Boolean
+	| 'Float' '?'?																											# Float
+	| 'String' '?'?																											# String
+	| 'non'																													# None
+	| 'Any'																													# Any
+	| '[' typeRule moreTypes ']'																							# ListOfType;
+typevalue: typeRule | typeset;
+typedef:
+	'type' TYPE_ID '<-' typevalue {
+# TODO: This typevalue.text should be replaced by either the aliased type or a list of known types.
+self.type_directory[$TYPE_ID.text] = $typevalue.text
 };
-typevalue: typeRule
-	| typeset
-	;
-typeset: '(' typeRule ('|' typeRule)* ')' {#TODO: This should return the list of defined types};
+typeset:
+	'(' typeRule ('|' typeRule)* ')' {#TODO: This should return the list of defined types};
 cond: '(' expression more_expressions ')';
 expression:
-	boolRule
+	func_call
+	| boolRule
 	| exp expression
 	| exp
 	| expression comparator expression
-	| 'non'
-	| func_call;
+	| 'non';
 boolRule: 'True' | 'False' | ID;
 comparator:
 	'>' {self.POper.append('>')}		# Greater
@@ -86,21 +97,21 @@ exp:
 	term # JustTerm
 	| '+' {self.POper.append('+')} term {
 if self.POper[-1] == "+":
-  right_operand = self.PilaO.pop()
-  left_operand = self.PilaO.pop()
+  right_operand, right_type = self.PilaO.pop()
+  left_operand, left_type = self.PilaO.pop()
   operator = self.POper.pop()
   self.temp = self.temp + 1
-  # TODO: Check types
+  return_type = check_operation_type(operator, left_type, right_type)
   self.quadruples.append((operator, left_operand, right_operand, self.temp))
   self.PilaO.append(self.temp)
 } # Addition
 	| '-' {self.POper.append('-')} term {
 if self.POper[-1] == "-":
-  right_operand = self.PilaO.pop()
-  left_operand = self.PilaO.pop()
+  right_operand, right_type = self.PilaO.pop()
+  left_operand, left_type = self.PilaO.pop()
   operator = self.POper.pop()
   self.temp = self.temp + 1
-  # TODO: Check types
+  return_type = check_operation_type(operator, left_type, right_type)
   self.quadruples.append((operator, left_operand, right_operand, self.temp))
   self.PilaO.append(self.temp)
 } # Substraction;
@@ -108,55 +119,66 @@ term:
 	factor # JustFactor
 	| '*' {self.POper.append('*')} factor {
 if self.POper[-1] == "*":
-  right_operand = self.PilaO.pop()
-  left_operand = self.PilaO.pop()
+  right_operand, right_type = self.PilaO.pop()
+  left_operand, left_type = self.PilaO.pop()
   operator = self.POper.pop()
   self.temp = self.temp + 1
-  # TODO: Check types
+  return_type = check_operation_type(operator, left_type, right_type)
   self.quadruples.append((operator, left_operand, right_operand, self.temp))
   self.PilaO.append(self.temp)
 } # Multiplication
 	| '/' {self.POper.append('/')} factor {
 if self.POper[-1] == "/":
-  right_operand = self.PilaO.pop()
-  left_operand = self.PilaO.pop()
+  right_operand, right_type = self.PilaO.pop()
+  left_operand, left_type = self.PilaO.pop()
   operator = self.POper.pop()
   self.temp = self.temp + 1
-  # TODO: Check types
+  return_type = check_operation_type(operator, left_type, right_type)
   self.quadruples.append((operator, left_operand, right_operand, self.temp))
   self.PilaO.append(self.temp)
 } # Division
 	| '%' {self.POper.append('%')} factor {
 if self.POper[-1] == "%":
-  right_operand = self.PilaO.pop()
-  left_operand = self.PilaO.pop()
+  right_operand, right_type = self.PilaO.pop()
+  left_operand, left_type = self.PilaO.pop()
   operator = self.POper.pop()
+  return_type = check_operation_type(operator, left_type, right_type)
   self.temp = self.temp + 1
-  # TODO: Check types
   self.quadruples.append((operator, left_operand, right_operand, self.temp))
   self.PilaO.append(self.temp)
 } # Modulo;
 more_expressions: ',' expression more_expressions |;
 factor:
-	'-'? varconst {self.PilaO.append($varconst.text)}
+	'-'? varconst
 	| '(' {self.POper.append('(')} expression ')' {self.POper.append(')')}
 	| 'non'
-	| STRING {self.POper.append($STRING.text)}
+	| STRING {self.POper.append($STRING.text); self.PTypes.append("String")}
 	| '[' expression more_expressions ']'
 	| '[]';
-varconst: ID | CONST_I | CONST_F;
+varconst:
+	ID {
+if $ID.text not in self.func_directory[self.current_function].vars:
+  raise Exception("ID {} is not defined".format($ID.text))
+self.PilaO.append(($ID.text, self.func_directory[self.current_function].vars[$ID.text].type))
+}
+	| CONST_I {self.PilaO.append(($CONST_I.text, "Int"))}
+	| CONST_F {self.PilaO.append(($CONST_F.text, "Float"))};
 
 block: statement (statement)*;
 
 statement: assignment | expression;
-func_call: ID '(' expression more_expressions ')';
+func_call:
+	ID {
+if $ID.text not in self.func_directory:
+  raise Exception("Function {} does not exist".format($ID.text))
+} '(' expression more_expressions ')';
 assignment:
 	typeRule ID '<-' expression {
 if $ID.text not in self.func_directory[self.current_function]:
   self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
 };
 main:
-	things morethings {print(self.func_directory); print(self.quadruples)} EOF;
+	things morethings {pp.pprint(self.func_directory); pp.pprint(self.quadruples)} EOF;
 things:
 	function
 	| func_call
