@@ -2,14 +2,16 @@ grammar Quark;
 
 @header {
 from collections import namedtuple
-from arithmetic_cube import check_operation_type
+from utils import check_operation_type, handle_math_operation
 import pprint
 pp = pprint.PrettyPrinter()
 }
 
 @parser::members {
 FuncRecord = namedtuple('FuncRecord', ['type', 'vars'])
-VarRecord = namedtuple('VarRecord', ['type', 'dir', 'dim'])
+VarRecord = namedtuple('VarRecord', ['addr', 'dim'])
+Operand = namedtuple("Operand", ['name', 'type', 'address'])
+
 func_directory = {
   "global": FuncRecord('non', {}), 
   "append": FuncRecord('[Any]', {}),
@@ -27,15 +29,6 @@ gotos = []
 temp = 0
 # Memory = namedtuple('Memory', ['number', 'value'])
 # memory = Memory()
-
-def handle_operation(self):
-  right_operand, right_type = self.PilaO.pop()
-  left_operand, left_type = self.PilaO.pop()
-  operator = self.POper.pop()
-  return_type = check_operation_type(operator, left_type, right_type)
-  self.quadruples.append((operator, left_operand, right_operand, self.temp))
-  self.PilaO.append((self.temp, return_type))
-  self.temp = self.temp + 1
 }
 
 ID:[a-z][a-zA-Z0-9_]*;
@@ -112,49 +105,49 @@ exp:
 	term # JustTerm
 	| '+' {self.POper.append('+')} term {
 if self.POper[-1] == "+":
-  self.handle_operation()
+  handle_operation(self)
 } # Addition
 	| '-' {self.POper.append('-')} term {
 if self.POper[-1] == "-":
-  self.handle_operation()
+  handle_operation(self)
 } # Substraction
 	| '>' {self.POper.append('>')} term {
 if self.POper[-1] == ">":
-  self.handle_operation()
+  handle_operation(self)
 } # Greater
 	| '<' {self.POper.append('<')} term {
 if self.POper[-1] == "<":
-  self.handle_operation()
+  handle_operation(self)
 } # Lesser
 	| '=' {self.POper.append('=')} term {
 if self.POper[-1] == "=":
-  self.handle_operation()
+  handle_operation(self)
 } # Equal
 	| '>=' {self.POper.append('>=')} term {
 if self.POper[-1] == ">=":
-  self.handle_operation()
+  handle_operation(self)
 } # GreaterEqual
 	| '<=' {self.POper.append('<=')} term {
 if self.POper[-1] == "<=":
-  self.handle_operation()
+  handle_operation(self)
 } # LesserEqual
 	| '!=' {self.POper.append('!=')} term {
 if self.POper[-1] == "!=":
-  self.handle_operation()
+  handle_operation(self)
 } # NotEqual;
 term:
 	factor # JustFactor
 	| '*' {self.POper.append('*')} factor {
 if self.POper[-1] == "*":
-  self.handle_operation()
+  handle_operation(self)
 } # Multiplication
 	| '/' {self.POper.append('/')} factor {
 if self.POper[-1] == "/":
-  self.handle_operation()
+  handle_operation(self)
 } # Division
 	| '%' {self.POper.append('%')} factor {
 if self.POper[-1] == "%":
-  self.handle_operation()
+  handle_operation(self)
 } # Modulo;
 more_expressions: ',' expression more_expressions |;
 factor:
@@ -176,8 +169,18 @@ if $ID.text not in self.func_directory[self.current_function].vars:
   raise Exception("ID {} is not defined".format($ID.text))
 self.PilaO.append(($ID.text, self.func_directory[self.current_function].vars[$ID.text].type))
 }
-	| CONST_I {self.PilaO.append(($CONST_I.text, "Int"))}
-	| CONST_F {self.PilaO.append(($CONST_F.text, "Float"))};
+	| CONST_I {
+if $CONST_I.text not in self.func_directory['global']['Int']:
+	addr = len(self.func_directory['global']['Int'])
+	self.func_directory['global']['Int'] = VarRecord(addr, 0)
+else:
+	addr = self.func_directory['global']['Int'][$CONST_I.text].addr
+operand = Operand($CONST_I.text, 'Int', addr)
+self.PilaO.append(operand)
+}
+	| CONST_F {
+self.PilaO.append(($CONST_F.text, "Float"))
+};
 
 block: statement (statement)*;
 
@@ -191,11 +194,13 @@ self.quadruples.append(($ID.text, "", "", ""))
 };
 assignment:
 	typeRule ID '<-' expression {
-if $ID.text not in self.func_directory[self.current_function]:
-  self.func_directory[self.current_function].vars[$ID.text] = self.VarRecord($typeRule.text, 0, None)
+current_vars_of_type = self.func_directory[self.current_function].vars[$typeRule.text]
+if $ID.text not in current_vars_of_type:
+	addr = len(current_vars_of_type)
+  current_vars_of_type[$ID.text] = self.VarRecord(addr, None)
 else:
-  raise Exception("Cannot declare type again")
-self.quadruples.append(('ASSIGN', '', '', $ID.text))
+  raise Exception("Variable with that type and name already declared")
+self.quadruples.append(('ASSIGN', self.quadruples[-1][-1], '', $ID.text))
 };
 main:
 	things morethings {
