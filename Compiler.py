@@ -11,6 +11,7 @@ class FuncRecord:
     # The _ is used to avoid a collision with a builtin or restricted name
     type_: str = attr.ib()
     vars_: Dict[str, Any] = attr.ib(attr.Factory(dict))
+    params_: int = attr.ib(0)
 
 
 @attr.s
@@ -40,11 +41,11 @@ class Compiler:
         "global": FuncRecord('non',
                              {'Int': {}, 'Float': {}, 'String': {}, 'Any': {}, '[Any]': {}
                               }),
-        "append": FuncRecord('[Any]'),
-        "print": FuncRecord('none'),
-        "upper": FuncRecord('String'),
-        "head": FuncRecord('Any'),
-        "tail": FuncRecord('[Any]'),
+        "append": FuncRecord('[Any]', {}, 2),
+        "print": FuncRecord('none', {}, 1),
+        "upper": FuncRecord('String', {}, 1),
+        "head": FuncRecord('Any', {}, 1),
+        "tail": FuncRecord('[Any]', {}, 1),
     }
     negative = False
     type_directory = {}
@@ -87,6 +88,7 @@ class Compiler:
     def process_param(self, ident, type_):
         function_name = self.function_stack[-1]
         function = self.func_directory[function_name]
+        function.params_ += 1
         function.vars_[type_][ident] = VarRecord(
             len(function.vars_[type_]), None)
 
@@ -192,7 +194,12 @@ class Compiler:
             raise Exception(f"Function {ident} does not exist.")
 
     def call_function(self, ident):
-        pass
+        function = self.func_directory[ident]
+        for i in range(function.params_):
+            self.quadruples.append(Quad("PARAM", self.operand_stack.pop()))
+        self.quadruples.append(Quad("ERA", ident, "", ""))
+        # This should be the result of the function
+        self.operand_stack.append(Operand("return", function.type_, 0))
 
     def handle_assignment(self, ident, type_):
         var_ctx = self.func_directory[self.function_stack[-1]].vars_
