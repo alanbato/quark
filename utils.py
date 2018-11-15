@@ -90,7 +90,7 @@ def check_operation_type(op, t1, t2):
     else:
         raise ValueError("Operator {} does not exist".format(op))
 
-def handle_operation(compiler):
+def handle_math_operation(compiler):
   right_operand, right_type = compiler.PilaO.pop()
   left_operand, left_type = compiler.PilaO.pop()
   operator = compiler.POper.pop()
