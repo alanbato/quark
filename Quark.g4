@@ -62,7 +62,7 @@ term:
 more_expressions: ',' expression more_expressions |;
 factor:
 	varconst													# Positive
-	| '(-' varconst ')'											# Negative
+	| '(-' {c.set_negative()} varconst ')'						# Negative
 	| '(' {c.start_parens()} expression ')' {c.end_parens()}	# Parens
 	| 'True' {c.add_literal('True', "Bool")}					# True
 	| 'False' {c.add_literal('False', "Bool")}					# False
@@ -70,7 +70,7 @@ factor:
 	| '[' expression more_expressions ']' {#TODO Handle Lists}	# List
 	| '[]' {c.add_literal('[]', "[Any]")}						# EmptyList;
 varconst:
-	ID {c.get_variable($ID.text); print($ctx.getParent())}
+	ID {c.get_variable($ID.text)}
 	| CONST_I {c.get_math_literal($CONST_I.text, "Int")}
 	| CONST_F {c.get_math_literal($CONST_F.text, "Float")};
 

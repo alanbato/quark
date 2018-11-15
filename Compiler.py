@@ -44,6 +44,7 @@ class Compiler:
         "head": FuncRecord('Any'),
         "tail": FuncRecord('[Any]'),
     }
+    negative = False
     type_directory = {}
     function_stack = ["global"]
     operand_stack = []
@@ -53,6 +54,9 @@ class Compiler:
     temp = 0  # <- Es el id de variables temporales?
     # Memory = namedtuple('Memory', ['number', 'value'])
     # memory = Memory()
+
+    def set_negative(self):
+        self.negative = True
 
     def define_function(self, func_name):
         self.function_stack.append(func_name)
@@ -134,6 +138,10 @@ class Compiler:
             self.temp = self.temp + 1
 
     def get_variable(self, ident, scope=None):
+        if self.negative:
+            ident = f'-{ident}'
+            self.negative = False
+
         if scope is None:
             var_ctx = self.func_directory[self.function_stack[-1]].vars_
             if ident not in var_ctx:
@@ -146,16 +154,22 @@ class Compiler:
                     return
         elif scope == 'global':
             var_ctx = self.func_directory['global'].vars_
-            if ident not in var_ctx:
+            for var_type_, vars_ in var_ctx.items():
+                if ident in vars_:
+                    self.operand_stack.append(
+                        Operand(ident, var_type_)
+                    )
+                break
+            else:
                 raise Exception(f'{ident} is undefined.')
         else:
             raise NotImplementedError(
                 'Supplying a specific context is not yet supported.')
-        self.operand_stack.append(
-            Operand(ident, var_ctx[ident].type)
-        )
 
     def get_math_literal(self, literal, type_):
+        if self.negative:
+            literal = f'-{literal}'
+            self.negative = False
         var_ctx = self.func_directory['global'].vars_[type_]
         if literal not in var_ctx:
             addr = len(var_ctx)
@@ -175,10 +189,10 @@ class Compiler:
 
     def handle_assignment(self, ident, type_):
         var_ctx = self.func_directory[self.function_stack[-1]].vars_
-        for type_, vars_ in var_ctx.items():
+        for var_type_, vars_ in var_ctx.items():
             if ident in vars_:
                 raise Exception(
-                    f"Variable {ident} already defined with type {type_}")
+                    f"Variable {ident} already defined with type {var_type_}")
         else:
             addr = len(var_ctx[type_])
             var_ctx[type_][ident] = VarRecord(addr, None)
