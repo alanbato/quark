@@ -6,7 +6,7 @@ import sys
 
 
 from collections import namedtuple
-from arithmetic_cube import check_operation_type
+from utils import check_operation_type, handle_math_operation
 import pprint
 pp = pprint.PrettyPrinter()
 

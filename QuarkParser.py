@@ -7,7 +7,7 @@ import sys
 
 
 from collections import namedtuple
-from arithmetic_cube import check_operation_type
+from utils import check_operation_type, handle_math_operation
 import pprint
 pp = pprint.PrettyPrinter()
 
@@ -261,9 +261,11 @@ class QuarkParser ( Parser ):
 
 
     FuncRecord = namedtuple('FuncRecord', ['type', 'vars'])
-    VarRecord = namedtuple('VarRecord', ['type', 'dir', 'dim'])
+    VarRecord = namedtuple('VarRecord', ['addr', 'dim'])
+    Operand = namedtuple("Operand", ['name', 'type', 'address'])
+
     func_directory = {
-      "global": FuncRecord('non', {}), 
+      "global": FuncRecord('non', {'Int':{}, 'Float':{}}), 
       "append": FuncRecord('[Any]', {}),
       "print": FuncRecord('none', {}),
       "upper": FuncRecord('String', {}),
@@ -279,15 +281,6 @@ class QuarkParser ( Parser ):
     temp = 0
     # Memory = namedtuple('Memory', ['number', 'value'])
     # memory = Memory()
-
-    def handle_operation(self):
-      right_operand, right_type = self.PilaO.pop()
-      left_operand, left_type = self.PilaO.pop()
-      operator = self.POper.pop()
-      return_type = check_operation_type(operator, left_type, right_type)
-      self.quadruples.append((operator, left_operand, right_operand, self.temp))
-      self.PilaO.append((self.temp, return_type))
-      self.temp = self.temp + 1
 
 
     class FunctionContext(ParserRuleContext):
@@ -1376,7 +1369,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == "+":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1390,7 +1383,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == "-":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1404,7 +1397,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == ">":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1418,7 +1411,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == "<":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1432,7 +1425,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == "=":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1446,7 +1439,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == ">=":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1460,7 +1453,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == "<=":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1474,7 +1467,7 @@ class QuarkParser ( Parser ):
                 self.term()
 
                 if self.POper[-1] == "!=":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
 
@@ -1604,7 +1597,7 @@ class QuarkParser ( Parser ):
                 self.factor()
 
                 if self.POper[-1] == "*":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
             elif token in [QuarkParser.T__30]:
@@ -1617,7 +1610,7 @@ class QuarkParser ( Parser ):
                 self.factor()
 
                 if self.POper[-1] == "/":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
             elif token in [QuarkParser.T__31]:
@@ -1630,7 +1623,7 @@ class QuarkParser ( Parser ):
                 self.factor()
 
                 if self.POper[-1] == "%":
-                  self.handle_operation()
+                  handle_operation(self)
 
                 pass
             else:
@@ -1878,13 +1871,29 @@ class QuarkParser ( Parser ):
                 self.enterOuterAlt(localctx, 2)
                 self.state = 249
                 localctx._CONST_I = self.match(QuarkParser.CONST_I)
-                self.PilaO.append(((None if localctx._CONST_I is None else localctx._CONST_I.text), "Int"))
+
+                if (None if localctx._CONST_I is None else localctx._CONST_I.text) not in self.func_directory['global'].vars['Int']:
+                	addr = len(self.func_directory['global'].vars['Int'])
+                	self.func_directory['global'].vars['Int'][(None if localctx._CONST_I is None else localctx._CONST_I.text)] = self.VarRecord(addr, 0)
+                else:
+                	addr = self.func_directory['global'].vars['Int'][(None if localctx._CONST_I is None else localctx._CONST_I.text)].addr
+                operand = self.Operand((None if localctx._CONST_I is None else localctx._CONST_I.text), 'Int', addr)
+                self.PilaO.append(operand)
+
                 pass
             elif token in [QuarkParser.CONST_F]:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 251
                 localctx._CONST_F = self.match(QuarkParser.CONST_F)
-                self.PilaO.append(((None if localctx._CONST_F is None else localctx._CONST_F.text), "Float"))
+
+                if (None if localctx._CONST_F is None else localctx._CONST_F.text) not in self.func_directory['global'].vars['Float']:
+                	addr = len(self.func_directory['global'].vars['Float'])
+                	self.func_directory['global'].vars['Float'][(None if localctx._CONST_F is None else localctx._CONST_F.text)] = self.VarRecord(addr, 0)
+                else:
+                	addr = self.func_directory['global'].vars['Float'][(None if localctx._CONST_F is None else localctx._CONST_F.text)].addr
+                operand = self.Operand((None if localctx._CONST_F is None else localctx._CONST_F.text), 'Float', addr)
+                self.PilaO.append(operand)
+
                 pass
             else:
                 raise NoViableAltException(self)
@@ -2123,11 +2132,13 @@ class QuarkParser ( Parser ):
             self.state = 281
             self.expression()
 
-            if (None if localctx._ID is None else localctx._ID.text) not in self.func_directory[self.current_function]:
-              self.func_directory[self.current_function].vars[(None if localctx._ID is None else localctx._ID.text)] = self.VarRecord((None if localctx._typeRule is None else self._input.getText((localctx._typeRule.start,localctx._typeRule.stop))), 0, None)
+            current_vars_of_type = self.func_directory[self.current_function].vars[(None if localctx._typeRule is None else self._input.getText((localctx._typeRule.start,localctx._typeRule.stop)))]
+            if (None if localctx._ID is None else localctx._ID.text) not in current_vars_of_type:
+            	addr = len(current_vars_of_type)
+            	current_vars_of_type[(None if localctx._ID is None else localctx._ID.text)] = self.VarRecord(addr, None)
             else:
-              raise Exception("Cannot declare type again")
-            self.quadruples.append(('ASSIGN', '', '', (None if localctx._ID is None else localctx._ID.text)))
+              raise Exception("Variable with that type and name already declared")
+            self.quadruples.append(('ASSIGN', self.PilaO.pop(), '', (None if localctx._ID is None else localctx._ID.text)))
 
         except RecognitionException as re:
             localctx.exception = re

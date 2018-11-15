@@ -13,7 +13,7 @@ VarRecord = namedtuple('VarRecord', ['addr', 'dim'])
 Operand = namedtuple("Operand", ['name', 'type', 'address'])
 
 func_directory = {
-  "global": FuncRecord('non', {}), 
+  "global": FuncRecord('non', {'Int':{}, 'Float':{}}), 
   "append": FuncRecord('[Any]', {}),
   "print": FuncRecord('none', {}),
   "upper": FuncRecord('String', {}),
@@ -88,11 +88,10 @@ if $TYPE_ID.text not in self.type_directory:
 typevalue: typeRule | typeset;
 typedef:
 	'type' TYPE_ID '<-' typevalue {
-# TODO: This typevalue.text should be replaced by either the aliased type or a list of known types.
 self.type_directory[$TYPE_ID.text] = $typevalue.text
 };
 typeset:
-	'(' typeRule ('|' typeRule)* ')' {#TODO: This should return the list of defined types};
+	'(' typeRule ('|' typeRule)* ')';
 cond:
 	'(' expression more_expressions ')' {
 index = len(self.quadruples) - 1
@@ -170,16 +169,22 @@ if $ID.text not in self.func_directory[self.current_function].vars:
 self.PilaO.append(($ID.text, self.func_directory[self.current_function].vars[$ID.text].type))
 }
 	| CONST_I {
-if $CONST_I.text not in self.func_directory['global']['Int']:
-	addr = len(self.func_directory['global']['Int'])
-	self.func_directory['global']['Int'] = VarRecord(addr, 0)
+if $CONST_I.text not in self.func_directory['global'].vars['Int']:
+	addr = len(self.func_directory['global'].vars['Int'])
+	self.func_directory['global'].vars['Int'][$CONST_I.text] = self.VarRecord(addr, 0)
 else:
-	addr = self.func_directory['global']['Int'][$CONST_I.text].addr
-operand = Operand($CONST_I.text, 'Int', addr)
+	addr = self.func_directory['global'].vars['Int'][$CONST_I.text].addr
+operand = self.Operand($CONST_I.text, 'Int', addr)
 self.PilaO.append(operand)
 }
 	| CONST_F {
-self.PilaO.append(($CONST_F.text, "Float"))
+if $CONST_F.text not in self.func_directory['global'].vars['Float']:
+	addr = len(self.func_directory['global'].vars['Float'])
+	self.func_directory['global'].vars['Float'][$CONST_F.text] = self.VarRecord(addr, 0)
+else:
+	addr = self.func_directory['global'].vars['Float'][$CONST_F.text].addr
+operand = self.Operand($CONST_F.text, 'Float', addr)
+self.PilaO.append(operand)
 };
 
 block: statement (statement)*;
@@ -197,10 +202,12 @@ assignment:
 current_vars_of_type = self.func_directory[self.current_function].vars[$typeRule.text]
 if $ID.text not in current_vars_of_type:
 	addr = len(current_vars_of_type)
-  current_vars_of_type[$ID.text] = self.VarRecord(addr, None)
+	current_vars_of_type[$ID.text] = self.VarRecord(addr, None)
+	print(current_vars_of_type)
 else:
   raise Exception("Variable with that type and name already declared")
-self.quadruples.append(('ASSIGN', self.quadruples[-1][-1], '', $ID.text))
+
+self.quadruples.append(('ASSIGN', self.PilaO.pop(), '', $ID.text))
 };
 main:
 	things morethings {
