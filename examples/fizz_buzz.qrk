@@ -1,0 +1,21 @@
+def fizz_buzz(n: Int, m: Int) -> non {
+	(n = m) {
+		non;
+	}
+	(n % 3 = 0, n % 5 = 0) {
+		print("FizzBuzz");
+	}
+	(n % 3 = 0) {
+    	print("Fizz");
+	}
+	(n % 5 = 0) {
+    	print("Buzz");
+	}
+	default {
+    	print(n);
+    	Int y <- n + 1 - 2 / 3 * (5 + 4);
+    	fizz_buzz(m, m);
+      Int w <- 1 + 2;
+      w;
+	}
+}

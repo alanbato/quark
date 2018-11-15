@@ -1,0 +1,4 @@
+type Rectangle <- [Float, Float];
+type Triangle <- [Float];
+type Circle <- [Float];
+type Shape <- (Rectangle | Triangle | Circle);

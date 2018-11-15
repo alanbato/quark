@@ -37,7 +37,9 @@ class Quad:
 class Compiler:
     """Compiler logic and state."""
     func_directory = {
-        "global": FuncRecord('non', {'Int': {}, 'Float': {}}),
+        "global": FuncRecord('non',
+                             {'Int': {}, 'Float': {}, 'String': {}, 'Any': {}, '[Any]': {}
+                              }),
         "append": FuncRecord('[Any]'),
         "print": FuncRecord('none'),
         "upper": FuncRecord('String'),
@@ -64,7 +66,7 @@ class Compiler:
             Exception("Function {} already defined".format(func_name))
         else:
             self.func_directory[func_name] = FuncRecord(
-                None, {'Int': {}, 'Float': {}})
+                None, {'Int': {}, 'Float': {}, 'String': {}, 'Any': {}, '[Any]': {}})
 
     def set_function_return_type(self, func_name, ret_type):
         self.func_directory[func_name].type_ = ret_type
@@ -98,13 +100,12 @@ class Compiler:
 
     def condition(self):
         quad_idx = len(self.quadruples) - 1
-        self.quadruples.append("GOTOF", quad_idx)
+        self.quadruples.append(Quad("GOTOF", quad_idx, "", self.temp))
         self.gotos.append(quad_idx + 1)
         self.temp = self.temp + 1
 
     def add_operator(self, operator):
         self.operator_stack.append(operator)
-        print(self.operator_stack)
 
     def start_parens(self):
         self.operator_stack.append('(')
@@ -144,7 +145,13 @@ class Compiler:
 
         if scope is None:
             var_ctx = self.func_directory[self.function_stack[-1]].vars_
-            if ident not in var_ctx:
+            for var_type_, vars_ in var_ctx.items():
+                if ident in vars_:
+                    self.operand_stack.append(
+                        Operand(ident, var_type_)
+                    )
+                    break
+            else:
                 try:
                     self.get_variable(ident, scope='global')
                 except Exception as e:

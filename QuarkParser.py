@@ -2085,7 +2085,7 @@ class QuarkParser ( Parser ):
             self.more_expressions()
             self.state = 277
             self.match(QuarkParser.T__2)
-            c.call_function()
+            c.call_function((None if localctx._ID is None else localctx._ID.text))
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
