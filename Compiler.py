@@ -102,7 +102,7 @@ class Compiler:
 
     def condition(self):
         quad_idx = len(self.quadruples) - 1
-        self.quadruples.append(Quad("GOTOF", quad_idx, "", self.temp))
+        self.quadruples.append(Quad("GOTOF", quad_idx, None, self.temp))
         self.gotos.append(quad_idx + 1)
         self.temp = self.temp + 1
 
@@ -197,7 +197,7 @@ class Compiler:
         function = self.func_directory[ident]
         for i in range(function.params_):
             self.quadruples.append(Quad("PARAM", self.operand_stack.pop()))
-        self.quadruples.append(Quad("ERA", ident, "", ""))
+        self.quadruples.append(Quad("ERA", ident, None, None))
         # This should be the result of the function
         self.operand_stack.append(Operand("return", function.type_, 0))
 
