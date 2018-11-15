@@ -5,10 +5,8 @@ if __name__ is not None and "." in __name__:
 else:
     from QuarkParser import QuarkParser
 
-from collections import namedtuple
-from utils import check_operation_type, handle_math_operation
-import pprint
-pp = pprint.PrettyPrinter()
+from compiler import Compiler
+c = Compiler()
 
 
 # This class defines a complete listener for a parse tree produced by QuarkParser.

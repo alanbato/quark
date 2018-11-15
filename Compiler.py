@@ -26,8 +26,8 @@ class Operand:
 @attr.s
 class Quad:
     operator = attr.ib()
-    left: Operand = attr.ib(None, init=False)
-    right: Operand = attr.ib(None, init=False)
+    left: Operand = attr.ib(None)
+    right: Operand = attr.ib(None)
     result: Any = attr.ib(attr.Factory(str))
 
 class Compiler:
@@ -90,17 +90,18 @@ class Compiler:
         quad_idx = len(self.quadruples) - 1
         self.quadruples.append("GOTOF", quad_idx)
         self.gotos.append(quad_idx + 1)
-        self.temp self.temp + 1
+        self.temp = self.temp + 1
     
     def add_operator(self, operator):
         self.operator_stack.append(operator)
+        print(self.operator_stack)
 
     def start_parens(self):
         self.operator_stack.append('(')
     
     def end_parens(self):
         if self.operator_stack[-1] == '(':
-            self.operand_stack.pop()
+            self.operator_stack.pop()
         else:
             raise Exception("Parenthesis mismatch")
     
@@ -109,8 +110,8 @@ class Compiler:
         #       and then add them with their addresses.
         self.operand_stack.append(Operand(value, type_))
     
-    def handle_math_operation(self, operator):
-        if self.operator_stack[-1] == operator:
+    def handle_math_operation(self, *operators):
+        if self.operator_stack[-1] in operators:
             right_operand = self.operand_stack.pop()
             left_operand = self.operand_stack.pop()
             operator = self.operator_stack.pop()
@@ -122,7 +123,7 @@ class Compiler:
                 Quad(operator, left_operand, right_operand, self.temp)
             )
             self.operand_stack.append(
-                Operand(self.temp, return_type)
+                Operand(f"T{self.temp}", return_type, self.temp)
             )
             self.temp = self.temp + 1
 
@@ -160,7 +161,7 @@ class Compiler:
 
     def check_function(self, ident):
         if ident not in self.func_directory:
-            rase Exception(f"Function {ident} does not exist.")
+            raise Exception(f"Function {ident} does not exist.")
     
     def call_function(self, ident):
         pass
@@ -174,10 +175,12 @@ class Compiler:
             addr = len(var_ctx[type_])
             var_ctx[type_][ident] = VarRecord(addr, None)
         self.quadruples.append(
-            Quad('ASSIGN', self.operand_stack.pop().addr, '', addr)
+            Quad('ASSIGN', self.operand_stack.pop().address, '', addr)
         )
     
     def print_state(self):
         pp.pprint(self.func_directory)
         for i, quad in enumerate(self.quadruples):
             print(i, quad)
+        pp.pprint(self.operand_stack)
+        pp.pprint(self.operator_stack)

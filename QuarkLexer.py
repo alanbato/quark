@@ -5,10 +5,8 @@ from typing.io import TextIO
 import sys
 
 
-from collections import namedtuple
-from utils import check_operation_type, handle_math_operation
-import pprint
-pp = pprint.PrettyPrinter()
+from compiler import Compiler
+c = Compiler()
 
 
 def serializedATN():
