@@ -291,12 +291,75 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#factor.
-    def enterFactor(self, ctx:QuarkParser.FactorContext):
+    # Enter a parse tree produced by QuarkParser#Positive.
+    def enterPositive(self, ctx:QuarkParser.PositiveContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#factor.
-    def exitFactor(self, ctx:QuarkParser.FactorContext):
+    # Exit a parse tree produced by QuarkParser#Positive.
+    def exitPositive(self, ctx:QuarkParser.PositiveContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#Negative.
+    def enterNegative(self, ctx:QuarkParser.NegativeContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#Negative.
+    def exitNegative(self, ctx:QuarkParser.NegativeContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#Parens.
+    def enterParens(self, ctx:QuarkParser.ParensContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#Parens.
+    def exitParens(self, ctx:QuarkParser.ParensContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#True.
+    def enterTrue(self, ctx:QuarkParser.TrueContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#True.
+    def exitTrue(self, ctx:QuarkParser.TrueContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#False.
+    def enterFalse(self, ctx:QuarkParser.FalseContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#False.
+    def exitFalse(self, ctx:QuarkParser.FalseContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#StringLiteral.
+    def enterStringLiteral(self, ctx:QuarkParser.StringLiteralContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#StringLiteral.
+    def exitStringLiteral(self, ctx:QuarkParser.StringLiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#List.
+    def enterList(self, ctx:QuarkParser.ListContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#List.
+    def exitList(self, ctx:QuarkParser.ListContext):
+        pass
+
+
+    # Enter a parse tree produced by QuarkParser#EmptyList.
+    def enterEmptyList(self, ctx:QuarkParser.EmptyListContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#EmptyList.
+    def exitEmptyList(self, ctx:QuarkParser.EmptyListContext):
         pass
 
 
