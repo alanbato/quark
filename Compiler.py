@@ -211,7 +211,7 @@ class Compiler:
             addr = len(var_ctx[type_])
             var_ctx[type_][ident] = VarRecord(addr, None)
         self.quadruples.append(
-            Quad('ASSIGN', self.operand_stack.pop().address, '', addr)
+            Quad('ASSIGN', self.operand_stack.pop().address, None, addr)
         )
 
     def print_state(self):
