@@ -37,7 +37,7 @@ typedef:
 	'type' TYPE_ID '<-' typevalue {c.define_type($TYPE_ID.text)};
 typeset: '(' typeRule ('|' typeRule)* ')';
 cond: '(' expression more_expressions ')' {c.condition()};
-expression: func_call | exp expression | exp | 'non';
+expression: func_call | func_call exp | exp expression | exp;
 exp:
 	term																						# JustTerm
 	| '+' {c.add_operator('+')} term {c.handle_math_operation("+", "-")}						# Addition
@@ -70,9 +70,11 @@ factor:
 	| '[' expression more_expressions ']' {#TODO Handle Lists}	# List
 	| '[]' {c.add_literal('[]', "[Any]")}						# EmptyList;
 varconst:
-	ID {c.get_variable($ID.text)}
+	func_call
+	| ID {c.get_variable($ID.text); print("id", $ID.text)}
 	| CONST_I {c.get_math_literal($CONST_I.text, "Int")}
-	| CONST_F {c.get_math_literal($CONST_F.text, "Float")};
+	| CONST_F {c.get_math_literal($CONST_F.text, "Float")}
+	| 'non';
 
 block: statement (statement)*;
 
@@ -84,8 +86,7 @@ assignment:
 main: things morethings {c.print_state()} EOF;
 things:
 	function
-	| func_call ';'
-	| assignment
-	| expression
+	| assignment ';'
+	| expression ';'
 	| typedef ';';
 morethings: things morethings |;

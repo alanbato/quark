@@ -1,0 +1,13 @@
+def fibonacci(n: Int) -> Int {
+  (n = 0) {
+    0;
+  }
+  (n = 1) {
+    1;
+  }
+  default {
+    fibonacci(n - 1) + fibonacci(n - 2) + fibonacci(n + 3);
+  }
+}
+
+print(fibonacci(10));
