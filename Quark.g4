@@ -37,7 +37,7 @@ typedef:
 	'type' TYPE_ID '<-' typevalue {c.define_type($TYPE_ID.text)};
 typeset: '(' typeRule ('|' typeRule)* ')';
 cond: '(' expression more_expressions ')' {c.condition()};
-expression: func_call | func_call exp | exp expression | exp;
+expression: exp | exp expression;
 exp:
 	term																						# JustTerm
 	| '+' {c.add_operator('+')} term {c.handle_math_operation("+", "-")}						# Addition
