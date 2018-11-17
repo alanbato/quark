@@ -8,6 +8,8 @@ import sys
 from compiler import Compiler
 c = Compiler()
 quadruples = None
+func_directory = None
+type_directory = None
 
 
 def serializedATN():

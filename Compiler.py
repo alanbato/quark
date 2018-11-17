@@ -132,12 +132,12 @@ class Compiler:
                 operator, left_operand.type_, right_operand.type_
             )
             # Create new temp variable
+            return_operand = Operand(f"T{self.temp}", return_type, self.temp)
+            self.operand_stack.append(return_operand)
             self.quadruples.append(
-                Quad(operator, left_operand, right_operand, self.temp)
+                Quad(operator, left_operand, right_operand, return_operand)
             )
-            self.operand_stack.append(
-                Operand(f"T{self.temp}", return_type, self.temp)
-            )
+
             self.temp = self.temp + 1
 
     def get_variable(self, ident, scope=None):
@@ -211,7 +211,8 @@ class Compiler:
             addr = len(var_ctx[type_])
             var_ctx[type_][ident] = VarRecord(addr, None)
         self.quadruples.append(
-            Quad('ASSIGN', self.operand_stack.pop().address, None, addr)
+            Quad('ASSIGN', self.operand_stack.pop(),
+                 None, Operand(ident, type_, addr))
         )
 
     def print_state(self):
@@ -224,4 +225,4 @@ class Compiler:
     def save_state(self, parser):
         parser.quadruples = self.quadruples
         parser.func_directory = self.func_directory
-        parser.parse_directory = self.type_directory
+        parser.type_directory = self.type_directory
