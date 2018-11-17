@@ -72,8 +72,11 @@ class VirtualMachine():
         self.params = []
 
     def handle_return(self, op):
-        # TODO: Implement return handling, assigning the variable to the address
-        pass
+        print(self.call_stack)
+        value = self.get_value(op.address, op.type_, op.is_global)
+        go_sub_idx = self.call_stack[-1] - 1
+        right_address = self.quadruples(go_sub_idx).right
+        self.memory_stack[-2][right_address] = value
 
     def perform_operaton(self, method, quad):
         left = quad.left
@@ -85,6 +88,7 @@ class VirtualMachine():
         type_ = type(left_value)
         operation = getattr(type_, method)
         result = operation(left_value, right_value)
+        print(left_value, right_value)
         if result is NotImplemented:
             type_ = type(right_value)
             method = method[:2] + 'r' + method[2:]
@@ -150,7 +154,7 @@ class VirtualMachine():
             elif quad.operator == "ERA":
                 self.era(quad.left)
             elif quad.operator == "RETURN":
-                self.handle_return(quad.result)
+                self.handle_return(quad.left)
             elif quad.operator == "ENDPROC":
                 self.memory_stack.pop()
                 self.memory = self.memory_stack[-1]

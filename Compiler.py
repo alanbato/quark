@@ -46,6 +46,7 @@ class Compiler:
                               'Float': {},
                               'String': {},
                               'Bool': {},
+                              'non': {},
                               'Any': {}, '[Any]': {},
                               }),
         "append": FuncRecord('[Any]', {}, 2),
@@ -70,29 +71,40 @@ class Compiler:
         self.negative = True
 
     def define_function(self, func_name):
+        self.gotos.append(len(self.quadruples))
+        self.quadruples.append(Quad("GOTO"))
         self.function_stack.append(func_name)
         if func_name in self.func_directory:
             Exception("Function {} already defined".format(func_name))
         else:
             self.func_directory[func_name] = FuncRecord(
-                None, {'Int': {}, 'Float': {}, 'Bool': {}, 'String': {}, 'Any': {}, '[Any]': {}}, 0, len(quadruples))
+                None, {'Int': {}, 'Float': {}, 'Bool': {},
+                       'String': {}, 'Any': {}, 'non': {}, '[Any]': {}
+                       }, 0, len(self.quadruples))
 
     def set_function_return_type(self, func_name, ret_type):
         self.func_directory[func_name].type_ = ret_type
 
     def process_function_clause(self):
-        ident = self.gotos.pop()
-        temp = self.quadruples[ident]
-        temp.result = len(self.quadruples) - 1
-        self.quadruples.append(Quad("RETURN"))
+        self.quadruples.append(Quad("RETURN", self.operand_stack.pop()))
+        quad_idx = self.gotos.pop()
+        temp = self.quadruples[quad_idx]
+        self.gotos.append(len(self.quadruples))
         self.quadruples.append(Quad("GOTO"))
+        temp.result = len(self.quadruples)
 
     def process_function_end(self):
-        self.temp = 0
+        while len(self.gotos) > 1:
+            quad_idx = self.gotos.pop()
+            quad = self.quadruples[quad_idx]
+            quad.result = len(self.quadruples)
         self.quadruples.append(Quad("ENDPROC"))
+        goto_idx = self.gotos.pop()
+        self.quadruples[goto_idx].result = len(self.quadruples)
         self.function_stack.pop()
         self.operand_stack = []
         self.operator_stack = []
+        self.temp = 0
 
     def process_param(self, ident, type_):
         function_name = self.function_stack[-1]
@@ -110,9 +122,9 @@ class Compiler:
             type_value = type_value[1:-1].split("|")
 
     def condition(self):
-        quad_idx = len(self.quadruples) - 1
-        self.quadruples.append(Quad("GOTOF", quad_idx, None, None))
-        self.gotos.append(quad_idx + 1)
+        self.gotos.append(len(self.quadruples))
+        self.quadruples.append(
+            Quad("GOTOF", self.operand_stack.pop()))
 
     def add_operator(self, operator):
         self.operator_stack.append(operator)
@@ -215,11 +227,20 @@ class Compiler:
             self.quadruples.append(Quad("PARAM", self.operand_stack.pop()))
         if ident == 'print':
             self.quadruples.append(Quad("PRINT"))
+            self.operand_stack.append(Operand('non', 'non', 0, True))
         else:
             self.quadruples.append(Quad("ERA", ident, None, None))
-            self.quadruples.append(Quad("GOSUB", ident, None, function.start_))
-        # This should be the result of the function
-        self.operand_stack.append(Operand("return", function.type_, 0))
+            # Create temp variable
+            func_name = self.function_stack[-1]
+            addr = len(self.func_directory[func_name].vars_[function.type_])
+            self.func_directory[func_name].vars_[
+                function.type_][f"__T{self.temp}__"] = VarRecord(addr)
+            return_operand = Operand(
+                f"__T{self.temp}__", function.type_, addr, func_name == 'global')
+            self.operand_stack.append(return_operand)
+            self.temp += 1
+            # Call function
+            self.quadruples.append(Quad("GOSUB", ident, addr, function.start_))
 
     def handle_assignment(self, ident, type_):
         var_ctx = self.func_directory[self.function_stack[-1]].vars_
@@ -235,6 +256,7 @@ class Compiler:
             Quad('ASSIGN', self.operand_stack.pop(),
                  None, Operand(ident, type_, addr, is_global))
         )
+        self.operand_stack.append(Operand('non', 'non', 0, True))
 
     def print_state(self):
         pp.pprint(self.func_directory)

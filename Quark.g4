@@ -76,6 +76,7 @@ factor:
 	| '(' {c.start_parens()} expression ')' {c.end_parens()}	# Parens
 	| 'True' {c.add_literal('True', "Bool")}					# True
 	| 'False' {c.add_literal('False', "Bool")}					# False
+	| 'non' {c.add_literal('non', "non")}						# False
 	| STRING {c.add_literal($STRING.text, "String")}			# StringLiteral
 	| '[' expression more_expressions ']' {#TODO Handle Lists}	# List
 	| '[]' {c.add_literal('[]', "[Any]")}						# EmptyList;
@@ -83,8 +84,7 @@ varconst:
 	func_call
 	| ID {c.get_variable($ID.text); print("id", $ID.text)}
 	| CONST_I {c.get_math_literal($CONST_I.text, "Int")}
-	| CONST_F {c.get_math_literal($CONST_F.text, "Float")}
-	| 'non';
+	| CONST_F {c.get_math_literal($CONST_F.text, "Float")};
 
 block: statement (statement)*;
 
