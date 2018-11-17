@@ -12,12 +12,14 @@ class FuncRecord:
     type_: str = attr.ib()
     vars_: Dict[str, Any] = attr.ib(attr.Factory(dict))
     params_: int = attr.ib(0)
+    start_: int = attr.ib(0)
 
 
 @attr.s
 class VarRecord:
     addr: int = attr.ib()
     dim: Any = attr.ib(None)
+    is_global: bool = attr.ib(False)
 
 
 @attr.s
@@ -25,6 +27,7 @@ class Operand:
     name: str = attr.ib()
     type_: str = attr.ib()
     address: int = attr.ib(None)
+    is_global: bool = attr.ib(False)
 
 
 @attr.s
@@ -39,10 +42,11 @@ class Compiler:
     """Compiler logic and state."""
     func_directory = {
         "global": FuncRecord('non',
-                             {'Int': {'__constants__': {}},
-                              'Float': {'__constants__': {}},
-                              'String': {'__constants__': {}},
-                              'Any': {}, '[Any]': {}
+                             {'Int': {},
+                              'Float': {},
+                              'String': {},
+                              'Bool': {},
+                              'Any': {}, '[Any]': {},
                               }),
         "append": FuncRecord('[Any]', {}, 2),
         "print": FuncRecord('none', {}, 1),
@@ -56,6 +60,7 @@ class Compiler:
     operand_stack = []
     operator_stack = []
     quadruples = []
+    constants = {'Int': {}, 'Float': {}, 'String': {}}
     gotos = []
     temp = 0  # <- Es el id de variables temporales?
     # Memory = namedtuple('Memory', ['number', 'value'])
@@ -70,7 +75,7 @@ class Compiler:
             Exception("Function {} already defined".format(func_name))
         else:
             self.func_directory[func_name] = FuncRecord(
-                None, {'Int': {}, 'Float': {}, 'String': {}, 'Any': {}, '[Any]': {}})
+                None, {'Int': {}, 'Float': {}, 'Bool': {}, 'String': {}, 'Any': {}, '[Any]': {}}, 0, len(quadruples))
 
     def set_function_return_type(self, func_name, ret_type):
         self.func_directory[func_name].type_ = ret_type
@@ -83,6 +88,7 @@ class Compiler:
         self.quadruples.append(Quad("GOTO"))
 
     def process_function_end(self):
+        self.temp = 0
         self.quadruples.append(Quad("ENDPROC"))
         self.function_stack.pop()
         self.operand_stack = []
@@ -99,15 +105,14 @@ class Compiler:
         if type_id not in self.type_directory:
             raise Exception(f"Undefined type {type_id}")
 
-    def define_type(type_id, type_value):
+    def define_type(self, type_id, type_value):
         if type_value.startswith("("):
             type_value = type_value[1:-1].split("|")
 
     def condition(self):
         quad_idx = len(self.quadruples) - 1
-        self.quadruples.append(Quad("GOTOF", quad_idx, None, self.temp))
+        self.quadruples.append(Quad("GOTOF", quad_idx, None, None))
         self.gotos.append(quad_idx + 1)
-        self.temp = self.temp + 1
 
     def add_operator(self, operator):
         self.operator_stack.append(operator)
@@ -124,9 +129,10 @@ class Compiler:
     def add_literal(self, value, type_):
         # TODO: Since this are literals, make them global constants first,
         #       and then add them with their addresses.
-        var_ctx = self.func_directory['global'].vars_[type_]['__constants__']
+        var_ctx = self.func_directory['global'].vars_[type_]
         addr = len(var_ctx)
-        var_ctx[value] = VarRecord(addr)
+        var_ctx[value] = VarRecord(addr, None, True)
+        self.constants[type_][addr] = value
         return addr
 
     def handle_math_operation(self, *operators):
@@ -138,7 +144,12 @@ class Compiler:
                 operator, left_operand.type_, right_operand.type_
             )
             # Create new temp variable
-            return_operand = Operand(f"T{self.temp}", return_type, self.temp)
+            func_name = self.function_stack[-1]
+            addr = len(self.func_directory[func_name].vars_[return_type])
+            self.func_directory[func_name].vars_[
+                return_type][f"__T{self.temp}__"] = VarRecord(addr)
+            return_operand = Operand(
+                f"__T{self.temp}__", return_type, addr, func_name == 'global')
             self.operand_stack.append(return_operand)
             self.quadruples.append(
                 Quad(operator, left_operand, right_operand, return_operand)
@@ -172,7 +183,7 @@ class Compiler:
             for var_type_, vars_ in var_ctx.items():
                 if ident in vars_:
                     self.operand_stack.append(
-                        Operand(ident, var_type_, vars_[ident].addr)
+                        Operand(ident, var_type_, vars_[ident].addr, True)
                     )
                 break
             else:
@@ -185,13 +196,13 @@ class Compiler:
         if self.negative:
             literal = f'-{literal}'
             self.negative = False
-        var_ctx = self.func_directory['global'].vars_[type_]['__constants__']
+        var_ctx = self.func_directory['global'].vars_[type_]
         if literal not in var_ctx:
             addr = self.add_literal(literal, type_)
         else:
             addr = var_ctx[literal].addr
         self.operand_stack.append(
-            Operand(literal, type_, addr)
+            Operand(literal, type_, addr, True)
         )
 
     def check_function(self, ident):
@@ -202,7 +213,11 @@ class Compiler:
         function = self.func_directory[ident]
         for i in range(function.params_):
             self.quadruples.append(Quad("PARAM", self.operand_stack.pop()))
-        self.quadruples.append(Quad("ERA", ident, None, None))
+        if ident == 'print':
+            self.quadruples.append(Quad("PRINT"))
+        else:
+            self.quadruples.append(Quad("ERA", ident, None, None))
+            self.quadruples.append(Quad("GOSUB", ident, None, function.start_))
         # This should be the result of the function
         self.operand_stack.append(Operand("return", function.type_, 0))
 
@@ -214,12 +229,11 @@ class Compiler:
                     f"Variable {ident} already defined with type {var_type_}")
         else:
             addr = len(var_ctx[type_])
-            if self.function_stack[-1] == 'global':
-                addr -= 1  # Don't count the constants
+            is_global = self.function_stack[-1] == 'global'
             var_ctx[type_][ident] = VarRecord(addr, None)
         self.quadruples.append(
             Quad('ASSIGN', self.operand_stack.pop(),
-                 None, Operand(ident, type_, addr))
+                 None, Operand(ident, type_, addr, is_global))
         )
 
     def print_state(self):
@@ -233,3 +247,4 @@ class Compiler:
         parser.quadruples = self.quadruples
         parser.func_directory = self.func_directory
         parser.type_directory = self.type_directory
+        parser.constants = self.constants

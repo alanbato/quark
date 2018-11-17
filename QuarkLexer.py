@@ -10,6 +10,7 @@ c = Compiler()
 quadruples = None
 func_directory = None
 type_directory = None
+constants = None
 
 
 def serializedATN():

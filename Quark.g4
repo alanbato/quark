@@ -6,6 +6,7 @@ c = Compiler()
 quadruples = None
 func_directory = None
 type_directory = None
+constants = None
 }
 
 ID:[a-z][a-zA-Z0-9_]*;

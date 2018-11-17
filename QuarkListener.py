@@ -10,6 +10,7 @@ c = Compiler()
 quadruples = None
 func_directory = None
 type_directory = None
+constants = None
 
 
 # This class defines a complete listener for a parse tree produced by QuarkParser.
