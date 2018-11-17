@@ -169,30 +169,12 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#JustTerm.
-    def enterJustTerm(self, ctx:QuarkParser.JustTermContext):
+    # Enter a parse tree produced by QuarkParser#JustExp.
+    def enterJustExp(self, ctx:QuarkParser.JustExpContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#JustTerm.
-    def exitJustTerm(self, ctx:QuarkParser.JustTermContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Addition.
-    def enterAddition(self, ctx:QuarkParser.AdditionContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Addition.
-    def exitAddition(self, ctx:QuarkParser.AdditionContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Substraction.
-    def enterSubstraction(self, ctx:QuarkParser.SubstractionContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Substraction.
-    def exitSubstraction(self, ctx:QuarkParser.SubstractionContext):
+    # Exit a parse tree produced by QuarkParser#JustExp.
+    def exitJustExp(self, ctx:QuarkParser.JustExpContext):
         pass
 
 
@@ -250,39 +232,21 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#JustFactor.
-    def enterJustFactor(self, ctx:QuarkParser.JustFactorContext):
+    # Enter a parse tree produced by QuarkParser#exp.
+    def enterExp(self, ctx:QuarkParser.ExpContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#JustFactor.
-    def exitJustFactor(self, ctx:QuarkParser.JustFactorContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Multiplication.
-    def enterMultiplication(self, ctx:QuarkParser.MultiplicationContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Multiplication.
-    def exitMultiplication(self, ctx:QuarkParser.MultiplicationContext):
+    # Exit a parse tree produced by QuarkParser#exp.
+    def exitExp(self, ctx:QuarkParser.ExpContext):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#Division.
-    def enterDivision(self, ctx:QuarkParser.DivisionContext):
+    # Enter a parse tree produced by QuarkParser#term.
+    def enterTerm(self, ctx:QuarkParser.TermContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#Division.
-    def exitDivision(self, ctx:QuarkParser.DivisionContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Modulo.
-    def enterModulo(self, ctx:QuarkParser.ModuloContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Modulo.
-    def exitModulo(self, ctx:QuarkParser.ModuloContext):
+    # Exit a parse tree produced by QuarkParser#term.
+    def exitTerm(self, ctx:QuarkParser.TermContext):
         pass
 
 

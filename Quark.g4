@@ -41,28 +41,34 @@ typedef:
 	'type' TYPE_ID '<-' typevalue {c.define_type($TYPE_ID.text)};
 typeset: '(' typeRule ('|' typeRule)* ')';
 cond: '(' expression more_expressions ')' {c.condition()};
-expression: exp | exp expression;
-exp:
-	term																						# JustTerm
-	| '+' {c.add_operator('+')} term {c.handle_math_operation("+", "-")}						# Addition
-	| '-' {c.add_operator('-')} term {c.handle_math_operation("-", "+")}						# Substraction
-	| '>' {c.add_operator('>')} term {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")}	#
+expression: comp (comp exp)*;
+comp:
+	exp																							# JustExp
+	| '>' {c.add_operator('>')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")}	#
 		Greater
-	| '<' {c.add_operator('<')} term {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
+	| '<' {c.add_operator('<')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
 		Lesser
-	| '=' {c.add_operator('=')} term {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
+	| '=' {c.add_operator('=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
 		Equal
-	| '>=' {c.add_operator('>=')} term {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
+	| '>=' {c.add_operator('>=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
 		GreaterEqual
-	| '<=' {c.add_operator('<=')} term {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
+	| '<=' {c.add_operator('<=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
 		LesserEqual
-	| '!=' {c.add_operator('!=')} term {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
+	| '!=' {c.add_operator('!=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
 		NotEqual;
+exp:
+	term (
+		('+' {c.add_operator('+')} | '-' {c.add_operator('-')}) term {c.handle_math_operation("+", "-")
+			}
+	)*;
 term:
-	factor																		# JustFactor
-	| '*' {c.add_operator('*')} factor {c.handle_math_operation("*", "/", "%")}	# Multiplication
-	| '/' {c.add_operator('/')} factor {c.handle_math_operation("*", "/", "%")}	# Division
-	| '%' {c.add_operator('%')} factor {c.handle_math_operation("*", "/", "%")}	# Modulo;
+	factor (
+		(
+			'*' {c.add_operator('*')}
+			| '/' {c.add_operator('/')}
+			| '%' {c.add_operator('%')}
+		) factor {c.handle_math_operation("*", "/", "%")}
+	)*;
 more_expressions: ',' expression more_expressions |;
 factor:
 	varconst													# Positive
@@ -84,7 +90,8 @@ block: statement (statement)*;
 
 statement: assignment ';' | expression ';';
 func_call:
-	ID {c.check_function($ID.text)} '(' expression more_expressions ')' {c.call_function($ID.text)};
+	ID {c.check_function($ID.text)} '(' expression more_expressions ')' {c.call_function($ID.text)
+			};
 assignment:
 	typeRule ID '<-' expression {c.handle_assignment($ID.text, $typeRule.text)};
 main:

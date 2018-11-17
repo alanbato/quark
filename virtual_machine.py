@@ -85,7 +85,13 @@ class VirtualMachine():
         type_ = type(left_value)
         operation = getattr(type_, method)
         result = operation(left_value, right_value)
+        if result is NotImplemented:
+            type_ = type(right_value)
+            method = method[:2] + 'r' + method[2:]
+            operation = getattr(type_, method)
+            result = operation(right_value, left_value)
         result_op = quad.result
+        print(result, result_op.type_)
         self.set_value(result_op.address, result,
                        result_op.type_, result_op.is_global)
 
