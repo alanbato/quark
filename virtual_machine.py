@@ -6,6 +6,7 @@ class VirtualMachine():
     memory = [None]*1000
     memory_stack = [memory]
     params = []
+    param_defs = []
     call_stack = []
     INT_BASE = 0
     FLOAT_BASE = 250
@@ -53,6 +54,9 @@ class VirtualMachine():
     def process_param(self, param):
         self.params.insert(0, param)
 
+    def process_param_def(self, param):
+        self.param_defs.append(param) # Es append o insert(0,) ?
+
     def print_(self):
         param = self.params.pop()
         param_value = self.get_value(param.address, param.type_)
@@ -61,15 +65,20 @@ class VirtualMachine():
     def era(self, func_name):
         new_memory = [None]*1000
         temp_memory = []
-        for _, param in enumerate(self.params):
+        print(self.params, self.param_defs)
+        for i, param in enumerate(self.params):
+            print('hi')
             param_value = self.get_value(param.address, param.type_)
             temp_memory = self.memory
             self.memory = new_memory
-            self.set_value(param.address, param_value, param.type_)
+            param_def_addr = self.param_defs[i]
+            print(param_value)
+            self.set_value(param_def_addr, param_value, param.type_)
             self.memory = temp_memory
         self.memory_stack.append(new_memory)
         self.memory = new_memory
         self.params = []
+        self.param_defs = []
 
     def handle_return(self, op):
         print(self.call_stack)
@@ -150,7 +159,9 @@ class VirtualMachine():
             elif quad.operator == "!=":
                 self.perform_operaton('__ne__', quad)
             elif quad.operator == "PARAM":
-                self.process_param(quad.left)
+                self.process_param(quad.result)
+            elif quad.operator == "PARAMDEF":
+                self.process_param_def(quad.result)
             elif quad.operator == "ERA":
                 self.era(quad.left)
             elif quad.operator == "RETURN":

@@ -71,8 +71,6 @@ class Compiler:
         self.negative = True
 
     def define_function(self, func_name):
-        self.gotos.append(len(self.quadruples))
-        self.quadruples.append(Quad("GOTO"))
         self.function_stack.append(func_name)
         if func_name in self.func_directory:
             Exception("Function {} already defined".format(func_name))
@@ -84,6 +82,8 @@ class Compiler:
 
     def set_function_return_type(self, func_name, ret_type):
         self.func_directory[func_name].type_ = ret_type
+        self.gotos.append(len(self.quadruples))
+        self.quadruples.append(Quad("GOTO"))
 
     def process_function_clause(self):
         self.quadruples.append(Quad("RETURN", self.operand_stack.pop()))
@@ -110,8 +110,11 @@ class Compiler:
         function_name = self.function_stack[-1]
         function = self.func_directory[function_name]
         function.params_ += 1
-        function.vars_[type_][ident] = VarRecord(
-            len(function.vars_[type_]), None)
+        addr = len(function.vars_[type_])
+        function.vars_[type_][ident] = VarRecord(addr, None)
+        self.quadruples.append(
+            Quad("PARAMDEF", ident, type_, addr)
+        )
 
     def check_user_def_type(self, type_id):
         if type_id not in self.type_directory:
@@ -224,7 +227,7 @@ class Compiler:
     def call_function(self, ident):
         function = self.func_directory[ident]
         for i in range(function.params_):
-            self.quadruples.append(Quad("PARAM", self.operand_stack.pop()))
+            self.quadruples.append(Quad("PARAM", None, None, self.operand_stack.pop()))
         if ident == 'print':
             self.quadruples.append(Quad("PRINT"))
             self.operand_stack.append(Operand('non', 'non', 0, True))

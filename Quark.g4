@@ -82,7 +82,7 @@ factor:
 	| '[]' {c.add_literal('[]', "[Any]")}						# EmptyList;
 varconst:
 	func_call
-	| ID {c.get_variable($ID.text); print("id", $ID.text)}
+	| ID {c.get_variable($ID.text)}
 	| CONST_I {c.get_math_literal($CONST_I.text, "Int")}
 	| CONST_F {c.get_math_literal($CONST_F.text, "Float")};
 
