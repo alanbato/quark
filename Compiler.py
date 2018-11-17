@@ -39,7 +39,10 @@ class Compiler:
     """Compiler logic and state."""
     func_directory = {
         "global": FuncRecord('non',
-                             {'Int': {}, 'Float': {}, 'String': {}, 'Any': {}, '[Any]': {}
+                             {'Int': {'__constants__': {}},
+                              'Float': {'__constants__': {}},
+                              'String': {'__constants__': {}},
+                              'Any': {}, '[Any]': {}
                               }),
         "append": FuncRecord('[Any]', {}, 2),
         "print": FuncRecord('none', {}, 1),
@@ -121,7 +124,10 @@ class Compiler:
     def add_literal(self, value, type_):
         # TODO: Since this are literals, make them global constants first,
         #       and then add them with their addresses.
-        self.operand_stack.append(Operand(value, type_))
+        var_ctx = self.func_directory['global'].vars_[type_]['__constants__']
+        addr = len(var_ctx)
+        var_ctx[value] = VarRecord(addr)
+        return addr
 
     def handle_math_operation(self, *operators):
         if self.operator_stack[-1] in operators:
@@ -150,7 +156,7 @@ class Compiler:
             for var_type_, vars_ in var_ctx.items():
                 if ident in vars_:
                     self.operand_stack.append(
-                        Operand(ident, var_type_)
+                        Operand(ident, var_type_, vars_[ident].addr)
                     )
                     break
             else:
@@ -166,7 +172,7 @@ class Compiler:
             for var_type_, vars_ in var_ctx.items():
                 if ident in vars_:
                     self.operand_stack.append(
-                        Operand(ident, var_type_)
+                        Operand(ident, var_type_, vars_[ident].addr)
                     )
                 break
             else:
@@ -179,10 +185,9 @@ class Compiler:
         if self.negative:
             literal = f'-{literal}'
             self.negative = False
-        var_ctx = self.func_directory['global'].vars_[type_]
+        var_ctx = self.func_directory['global'].vars_[type_]['__constants__']
         if literal not in var_ctx:
-            addr = len(var_ctx)
-            var_ctx[literal] = VarRecord(addr)
+            addr = self.add_literal(literal, type_)
         else:
             addr = var_ctx[literal].addr
         self.operand_stack.append(

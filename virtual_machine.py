@@ -3,6 +3,7 @@ class VirtualMachine():
     quadruples = []
     func_directory = {}
     type_directory = {}
+    memory = [None]*1000
 
     def __init__(self, parser, **kwargs):
         self.quadruples = parser.quadruples
@@ -10,10 +11,10 @@ class VirtualMachine():
         self.type_directory = parser.type_directory
 
     def get_value(self, addr):
-        return 0
+        return self.memory[addr]
 
     def set_value(self, addr, value):
-        pass
+        self.memory[addr] = value
 
     def run(self):
         for i, quad in enumerate(self.quadruples):
