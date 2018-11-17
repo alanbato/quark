@@ -214,6 +214,8 @@ class Compiler:
                     f"Variable {ident} already defined with type {var_type_}")
         else:
             addr = len(var_ctx[type_])
+            if self.function_stack[-1] == 'global':
+                addr -= 1  # Don't count the constants
             var_ctx[type_][ident] = VarRecord(addr, None)
         self.quadruples.append(
             Quad('ASSIGN', self.operand_stack.pop(),
