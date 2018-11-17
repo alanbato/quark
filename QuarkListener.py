@@ -7,6 +7,7 @@ else:
 
 from compiler import Compiler
 c = Compiler()
+quadruples = None
 
 
 # This class defines a complete listener for a parse tree produced by QuarkParser.

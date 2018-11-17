@@ -8,6 +8,7 @@ import sys
 
 from compiler import Compiler
 c = Compiler()
+quadruples = None
 
 def serializedATN():
     with StringIO() as buf:
@@ -2192,7 +2193,7 @@ class QuarkParser ( Parser ):
             self.things()
             self.state = 287
             self.morethings()
-            c.print_state()
+            c.print_state(); c.save_state(self)
             self.state = 289
             self.match(QuarkParser.EOF)
         except RecognitionException as re:

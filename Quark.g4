@@ -3,6 +3,9 @@ grammar Quark;
 @header {
 from compiler import Compiler
 c = Compiler()
+quadruples = None
+func_directory = None
+type_directory = None
 }
 
 ID:[a-z][a-zA-Z0-9_]*;
@@ -83,7 +86,8 @@ func_call:
 	ID {c.check_function($ID.text)} '(' expression more_expressions ')' {c.call_function($ID.text)};
 assignment:
 	typeRule ID '<-' expression {c.handle_assignment($ID.text, $typeRule.text)};
-main: things morethings {c.print_state()} EOF;
+main:
+	things morethings {c.print_state(); c.save_state(self)} EOF;
 things:
 	function
 	| assignment ';'

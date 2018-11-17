@@ -7,6 +7,7 @@ import sys
 
 from compiler import Compiler
 c = Compiler()
+quadruples = None
 
 
 def serializedATN():

@@ -220,3 +220,8 @@ class Compiler:
             print(i, quad)
         pp.pprint(self.operand_stack)
         pp.pprint(self.operator_stack)
+
+    def save_state(self, parser):
+        parser.quadruples = self.quadruples
+        parser.func_directory = self.func_directory
+        parser.parse_directory = self.type_directory
