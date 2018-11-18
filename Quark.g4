@@ -9,7 +9,7 @@ type_directory = None
 constants = None
 }
 
-ID:[a-z][a-zA-Z0-9_]*;
+ID: [a-z][a-zA-Z0-9_]*;
 TYPE_ID: [A-Z][a-zA-Z0-9_]*;
 CONST_I: [0-9]+;
 CONST_F: [0-9]+ [.][0-9]+;
@@ -72,17 +72,21 @@ factor:
 	varconst													# Positive
 	| '(-' {c.set_negative()} varconst ')'						# Negative
 	| '(' {c.start_parens()} expression ')' {c.end_parens()}	# Parens
-	| 'True' {c.add_literal('True', "Bool")}					# True
-	| 'False' {c.add_literal('False', "Bool")}					# False
-	| 'non' {c.add_literal('non', "non")}						# False
-	| STRING {c.get_math_literal($STRING.text, "String")}		# StringLiteral
-	| '[' expression (',' expression)* ']' {#TODO Handle Lists}	# List
-	| '[]' {c.add_literal('[]', "[Any]")}						# EmptyList;
+	| 'True' {c.get_literal('True', "Bool")}					# True
+	| 'False' {c.get_literal('False', "Bool")}					# False
+	| 'non' {c.get_literal('non', "non")}						# False
+	| STRING {c.get_literal($STRING.text, "String")}		# StringLiteral
+	| '[' list # ListStart
+	;
 varconst:
 	func_call
 	| ID {c.get_variable($ID.text)}
-	| CONST_I {c.get_math_literal($CONST_I.text, "Int")}
-	| CONST_F {c.get_math_literal($CONST_F.text, "Float")};
+	| CONST_I {c.get_literal($CONST_I.text, "Int")}
+	| CONST_F {c.get_literal($CONST_F.text, "Float")};
+list:
+	']' {c.get_literal('[]', "[Any]")}						# EmptyList
+	| expression {c.add_to_list()} (',' expression {c.add_to_list()})* ']' {c.end_list()}	# ListExpr
+	;
 
 block: statement (statement)*;
 

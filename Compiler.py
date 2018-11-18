@@ -148,13 +148,6 @@ class Compiler:
         else:
             raise Exception("Parenthesis mismatch")
 
-    def add_literal(self, value, type_):
-        var_ctx = self.func_directory['global'].vars_[type_]
-        addr = len(var_ctx)
-        var_ctx[value] = VarRecord(addr, None, True)
-        self.constants[type_][addr] = value
-        return addr
-
     def handle_math_operation(self, *operators):
         if self.operator_stack[-1] in operators:
             right_operand = self.operand_stack.pop()
@@ -212,7 +205,7 @@ class Compiler:
             raise NotImplementedError(
                 'Supplying a specific context is not yet supported.')
 
-    def get_math_literal(self, literal, type_):
+    def get_literal(self, literal, type_):
         if self.negative:
             literal = f'-{literal}'
             self.negative = False
