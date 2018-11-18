@@ -1,0 +1,10 @@
+def factorial(n: Int) -> Int {
+  (n <= 1) {
+      1;
+  }
+  default {
+      n * factorial(n-1);
+  }
+}
+
+print(factorial(4))

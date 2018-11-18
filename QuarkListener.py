@@ -169,66 +169,12 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#JustExp.
-    def enterJustExp(self, ctx:QuarkParser.JustExpContext):
+    # Enter a parse tree produced by QuarkParser#comp.
+    def enterComp(self, ctx:QuarkParser.CompContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#JustExp.
-    def exitJustExp(self, ctx:QuarkParser.JustExpContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Greater.
-    def enterGreater(self, ctx:QuarkParser.GreaterContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Greater.
-    def exitGreater(self, ctx:QuarkParser.GreaterContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Lesser.
-    def enterLesser(self, ctx:QuarkParser.LesserContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Lesser.
-    def exitLesser(self, ctx:QuarkParser.LesserContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#Equal.
-    def enterEqual(self, ctx:QuarkParser.EqualContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#Equal.
-    def exitEqual(self, ctx:QuarkParser.EqualContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#GreaterEqual.
-    def enterGreaterEqual(self, ctx:QuarkParser.GreaterEqualContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#GreaterEqual.
-    def exitGreaterEqual(self, ctx:QuarkParser.GreaterEqualContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#LesserEqual.
-    def enterLesserEqual(self, ctx:QuarkParser.LesserEqualContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#LesserEqual.
-    def exitLesserEqual(self, ctx:QuarkParser.LesserEqualContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#NotEqual.
-    def enterNotEqual(self, ctx:QuarkParser.NotEqualContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#NotEqual.
-    def exitNotEqual(self, ctx:QuarkParser.NotEqualContext):
+    # Exit a parse tree produced by QuarkParser#comp.
+    def exitComp(self, ctx:QuarkParser.CompContext):
         pass
 
 

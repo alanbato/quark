@@ -55,7 +55,7 @@ class VirtualMachine():
         self.params.insert(0, param)
 
     def process_param_def(self, param):
-        self.param_defs.append(param) # Es append o insert(0,) ?
+        self.param_defs.append(param)  # Es append o insert(0,) ?
 
     def print_(self):
         param = self.params.pop()
@@ -65,14 +65,14 @@ class VirtualMachine():
     def era(self, func_name):
         new_memory = [None]*1000
         temp_memory = []
-        print(self.params, self.param_defs)
+        self.param_defs = self.func_directory[func_name].params_addrs
         for i, param in enumerate(self.params):
-            print('hi')
+            # print(i)
             param_value = self.get_value(param.address, param.type_)
             temp_memory = self.memory
             self.memory = new_memory
             param_def_addr = self.param_defs[i]
-            print(param_value)
+            # print(param_value)
             self.set_value(param_def_addr, param_value, param.type_)
             self.memory = temp_memory
         self.memory_stack.append(new_memory)
@@ -81,30 +81,30 @@ class VirtualMachine():
         self.param_defs = []
 
     def handle_return(self, op):
-        print(self.call_stack)
+        # print(self.call_stack)
         value = self.get_value(op.address, op.type_, op.is_global)
         go_sub_idx = self.call_stack[-1] - 1
-        right_address = self.quadruples(go_sub_idx).right
+        right_address = self.quadruples[go_sub_idx].right
         self.memory_stack[-2][right_address] = value
 
-    def perform_operaton(self, method, quad):
+    def perform_operation(self, method, quad):
         left = quad.left
         left_value = self.get_value(
             left.address, left.type_, left.is_global)
         right = quad.right
         right_value = self.get_value(
             right.address, right.type_, right.is_global)
+        # print(left_value, right_value, method)
         type_ = type(left_value)
         operation = getattr(type_, method)
         result = operation(left_value, right_value)
-        print(left_value, right_value)
         if result is NotImplemented:
             type_ = type(right_value)
             method = method[:2] + 'r' + method[2:]
             operation = getattr(type_, method)
             result = operation(right_value, left_value)
         result_op = quad.result
-        print(result, result_op.type_)
+        # print(result, result_op.type_)
         self.set_value(result_op.address, result,
                        result_op.type_, result_op.is_global)
 
@@ -112,6 +112,7 @@ class VirtualMachine():
         i = 0
         while i < len(self.quadruples):
             quad = self.quadruples[i]
+            # print(i, quad)
             if quad.operator == 'ASSIGN':
                 value_addr = quad.left.address
                 value_type = quad.left.type_
@@ -137,27 +138,27 @@ class VirtualMachine():
                 i = quad.result
                 continue
             elif quad.operator == '+':
-                self.perform_operaton('__add__', quad)
+                self.perform_operation('__add__', quad)
             elif quad.operator == '-':
-                self.perform_operaton('__sub__', quad)
+                self.perform_operation('__sub__', quad)
             elif quad.operator == '*':
-                self.perform_operaton('__mul__', quad)
+                self.perform_operation('__mul__', quad)
             elif quad.operator == '/':
-                self.perform_operaton('__truediv__', quad)
+                self.perform_operation('__truediv__', quad)
             elif quad.operator == '%':
-                self.perform_operaton('__mod__', quad)
+                self.perform_operation('__mod__', quad)
             elif quad.operator == ">":
-                self.perform_operaton('__gt__', quad)
+                self.perform_operation('__gt__', quad)
             elif quad.operator == ">=":
-                self.perform_operaton('__ge__', quad)
+                self.perform_operation('__ge__', quad)
             elif quad.operator == "=":
-                self.perform_operaton('__eq__', quad)
+                self.perform_operation('__eq__', quad)
             elif quad.operator == "<":
-                self.perform_operaton('__lt__', quad)
+                self.perform_operation('__lt__', quad)
             elif quad.operator == "<=":
-                self.perform_operaton('__le__', quad)
+                self.perform_operation('__le__', quad)
             elif quad.operator == "!=":
-                self.perform_operaton('__ne__', quad)
+                self.perform_operation('__ne__', quad)
             elif quad.operator == "PARAM":
                 self.process_param(quad.result)
             elif quad.operator == "PARAMDEF":

@@ -19,7 +19,8 @@ SPACE: [\t\r\f\n ]+ -> skip;
 function:
 	'def' ID {c.define_function($ID.text)} '(' params ')' '->' typeRule {
 c.set_function_return_type($ID.text, $typeRule.text)
-} '{' (cond '{' block '}' {c.process_function_clause()})* 'default {' block '}' '}' {c.process_function_end()
+} '{' (cond '{' block '}' {c.process_function_clause()})* 'default {' block '}' {c.process_default_clause()
+		} '}' {c.process_function_end()
 		};
 params:
 	ID ':' typeRule {c.process_param($ID.text, $typeRule.text)} moreparams;
@@ -43,19 +44,17 @@ typeset: '(' typeRule ('|' typeRule)* ')';
 cond: '(' expression more_expressions ')' {c.condition()};
 expression: comp (comp exp)*;
 comp:
-	exp																							# JustExp
-	| '>' {c.add_operator('>')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")}	#
-		Greater
-	| '<' {c.add_operator('<')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
-		Lesser
-	| '=' {c.add_operator('=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
-		Equal
-	| '>=' {c.add_operator('>=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
-		GreaterEqual
-	| '<=' {c.add_operator('<=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
-		LesserEqual
-	| '!=' {c.add_operator('!=')} exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")} #
-		NotEqual;
+	exp (
+		(
+			'>' {c.add_operator('>')}
+			| '<' {c.add_operator('<')}
+			| '=' {c.add_operator('=')}
+			| '>=' {c.add_operator('>=')}
+			| '<=' {c.add_operator('<=')}
+			| '!=' {c.add_operator('!=')}
+		) exp {c.handle_math_operation(">", "<", "=", ">=", "<=", "!=")}
+	)*;
+
 exp:
 	term (
 		('+' {c.add_operator('+')} | '-' {c.add_operator('-')}) term {c.handle_math_operation("+", "-")

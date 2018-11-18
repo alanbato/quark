@@ -1,7 +1,7 @@
 from utils import check_operation_type
 
 import attr
-from typing import Any, Dict
+from typing import Any, Dict, List
 import pprint
 pp = pprint.PrettyPrinter()
 
@@ -13,6 +13,7 @@ class FuncRecord:
     vars_: Dict[str, Any] = attr.ib(attr.Factory(dict))
     params_: int = attr.ib(0)
     start_: int = attr.ib(0)
+    params_addrs: List[int] = attr.ib(attr.Factory(list))
 
 
 @attr.s
@@ -77,13 +78,14 @@ class Compiler:
         else:
             self.func_directory[func_name] = FuncRecord(
                 None, {'Int': {}, 'Float': {}, 'Bool': {},
-                       'String': {}, 'Any': {}, 'non': {}, '[Any]': {}
+                       'String': {}, 'Any': {}, 'non': {}, '[Any]': {}, 'PARAMS:': {}
                        }, 0, len(self.quadruples))
 
     def set_function_return_type(self, func_name, ret_type):
         self.func_directory[func_name].type_ = ret_type
         self.gotos.append(len(self.quadruples))
         self.quadruples.append(Quad("GOTO"))
+        self.func_directory[func_name].start_ = len(self.quadruples)
 
     def process_function_clause(self):
         self.quadruples.append(Quad("RETURN", self.operand_stack.pop()))
@@ -92,6 +94,9 @@ class Compiler:
         self.gotos.append(len(self.quadruples))
         self.quadruples.append(Quad("GOTO"))
         temp.result = len(self.quadruples)
+
+    def process_default_clause(self):
+        self.quadruples.append(Quad("RETURN", self.operand_stack.pop()))
 
     def process_function_end(self):
         while len(self.gotos) > 1:
@@ -112,9 +117,10 @@ class Compiler:
         function.params_ += 1
         addr = len(function.vars_[type_])
         function.vars_[type_][ident] = VarRecord(addr, None)
-        self.quadruples.append(
-            Quad("PARAMDEF", ident, type_, addr)
-        )
+        function.params_addrs.append(addr)
+        # self.quadruples.append(
+        #     Quad("PARAMDEF", ident, type_, addr)
+        # )
 
     def check_user_def_type(self, type_id):
         if type_id not in self.type_directory:
@@ -155,6 +161,7 @@ class Compiler:
             right_operand = self.operand_stack.pop()
             left_operand = self.operand_stack.pop()
             operator = self.operator_stack.pop()
+            print(right_operand, left_operand, operator)
             return_type = check_operation_type(
                 operator, left_operand.type_, right_operand.type_
             )
@@ -227,7 +234,8 @@ class Compiler:
     def call_function(self, ident):
         function = self.func_directory[ident]
         for i in range(function.params_):
-            self.quadruples.append(Quad("PARAM", None, None, self.operand_stack.pop()))
+            self.quadruples.append(
+                Quad("PARAM", None, None, self.operand_stack.pop()))
         if ident == 'print':
             self.quadruples.append(Quad("PRINT"))
             self.operand_stack.append(Operand('non', 'non', 0, True))
