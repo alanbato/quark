@@ -196,15 +196,6 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#more_expressions.
-    def enterMore_expressions(self, ctx:QuarkParser.More_expressionsContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#more_expressions.
-    def exitMore_expressions(self, ctx:QuarkParser.More_expressionsContext):
-        pass
-
-
     # Enter a parse tree produced by QuarkParser#Positive.
     def enterPositive(self, ctx:QuarkParser.PositiveContext):
         pass

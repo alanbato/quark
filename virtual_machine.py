@@ -59,7 +59,8 @@ class VirtualMachine():
 
     def print_(self):
         param = self.params.pop()
-        param_value = self.get_value(param.address, param.type_)
+        param_value = self.get_value(
+            param.address, param.type_, param.is_global)
         print("DEBUG:", param_value)
 
     def input_(self, op):

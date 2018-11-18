@@ -41,7 +41,7 @@ typevalue: typeRule | typeset;
 typedef:
 	'type' TYPE_ID '<-' typevalue {c.define_type($TYPE_ID.text)};
 typeset: '(' typeRule ('|' typeRule)* ')';
-cond: '(' expression more_expressions ')' {c.condition()};
+cond: '(' expression (',' expression)* ')' {c.condition()};
 expression: comp (comp exp)*;
 comp:
 	exp (
@@ -68,7 +68,6 @@ term:
 			| '%' {c.add_operator('%')}
 		) factor {c.handle_math_operation("*", "/", "%")}
 	)*;
-more_expressions: ',' expression more_expressions |;
 factor:
 	varconst													# Positive
 	| '(-' {c.set_negative()} varconst ')'						# Negative
@@ -76,8 +75,8 @@ factor:
 	| 'True' {c.add_literal('True', "Bool")}					# True
 	| 'False' {c.add_literal('False', "Bool")}					# False
 	| 'non' {c.add_literal('non', "non")}						# False
-	| STRING {c.add_literal($STRING.text, "String")}			# StringLiteral
-	| '[' expression more_expressions ']' {#TODO Handle Lists}	# List
+	| STRING {c.get_math_literal($STRING.text, "String")}		# StringLiteral
+	| '[' expression (',' expression)* ']' {#TODO Handle Lists}	# List
 	| '[]' {c.add_literal('[]', "[Any]")}						# EmptyList;
 varconst:
 	func_call
@@ -89,7 +88,9 @@ block: statement (statement)*;
 
 statement: assignment ';' | expression ';';
 func_call:
-	ID {c.check_function($ID.text)} '(' expression? more_expressions ')' {c.call_function($ID.text)
+	ID {c.check_function($ID.text)} '(' expression? (
+		',' expression
+	)* ')' {c.call_function($ID.text)
 			};
 assignment:
 	typeRule ID '<-' expression {c.handle_assignment($ID.text, $typeRule.text)};

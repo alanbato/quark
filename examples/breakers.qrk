@@ -1,3 +1,14 @@
-print(1)
-Int: a <- 2 + 4
-print(a)
+print(1);
+Int a <- 2 + 4;
+print(a);
+
+def two_params(a: Int, b: Int) -> non {
+  (a = b) {
+    print("Equal");
+  }
+  default {
+    print("Not equal");
+  }
+}
+
+two_params(5, 5);
