@@ -51,10 +51,11 @@ class Compiler:
                               'Any': {}, '[Any]': {},
                               }),
         "append": FuncRecord('[Any]', {}, 2),
-        "print": FuncRecord('none', {}, 1),
+        "print": FuncRecord('non', {}, 1),
         "upper": FuncRecord('String', {}, 1),
         "head": FuncRecord('Any', {}, 1),
         "tail": FuncRecord('[Any]', {}, 1),
+        "input": FuncRecord('Int', {}, 0)
     }
     negative = False
     type_directory = {}
@@ -148,8 +149,6 @@ class Compiler:
             raise Exception("Parenthesis mismatch")
 
     def add_literal(self, value, type_):
-        # TODO: Since this are literals, make them global constants first,
-        #       and then add them with their addresses.
         var_ctx = self.func_directory['global'].vars_[type_]
         addr = len(var_ctx)
         var_ctx[value] = VarRecord(addr, None, True)
@@ -161,7 +160,6 @@ class Compiler:
             right_operand = self.operand_stack.pop()
             left_operand = self.operand_stack.pop()
             operator = self.operator_stack.pop()
-            print(right_operand, left_operand, operator)
             return_type = check_operation_type(
                 operator, left_operand.type_, right_operand.type_
             )
@@ -239,6 +237,15 @@ class Compiler:
         if ident == 'print':
             self.quadruples.append(Quad("PRINT"))
             self.operand_stack.append(Operand('non', 'non', 0, True))
+        elif ident == 'input':
+            func_name = self.function_stack[-1]
+            addr = len(self.func_directory[func_name].vars_['Int'])
+            self.func_directory[func_name].vars_[
+                function.type_][f"__T{self.temp}__"] = VarRecord(addr)
+            result_operand = Operand(
+                'input', 'Int', addr, func_name == 'global')
+            self.operand_stack.append(result_operand)
+            self.quadruples.append(Quad("INPUT", result_operand))
         else:
             self.quadruples.append(Quad("ERA", ident, None, None))
             # Create temp variable

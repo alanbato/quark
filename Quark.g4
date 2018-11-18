@@ -89,7 +89,7 @@ block: statement (statement)*;
 
 statement: assignment ';' | expression ';';
 func_call:
-	ID {c.check_function($ID.text)} '(' expression more_expressions ')' {c.call_function($ID.text)
+	ID {c.check_function($ID.text)} '(' expression? more_expressions ')' {c.call_function($ID.text)
 			};
 assignment:
 	typeRule ID '<-' expression {c.handle_assignment($ID.text, $typeRule.text)};

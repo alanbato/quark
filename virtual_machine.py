@@ -62,6 +62,10 @@ class VirtualMachine():
         param_value = self.get_value(param.address, param.type_)
         print("DEBUG:", param_value)
 
+    def input_(self, op):
+        value = input("Enter your input: ")
+        self.set_value(op.address, value, op.type_, op.is_global)
+
     def era(self, func_name):
         new_memory = [None]*1000
         temp_memory = []
@@ -122,6 +126,8 @@ class VirtualMachine():
                 self.set_value(result.address, value, result.type_)
             elif quad.operator == 'PRINT':
                 self.print_()
+            elif quad.operator == 'INPUT':
+                self.input_(quad.left)
             elif quad.operator == 'GOSUB':
                 self.call_stack.append(i + 1)
                 i = quad.result
