@@ -209,6 +209,13 @@ class Compiler:
             raise NotImplementedError(
                 'Supplying a specific context is not yet supported.')
 
+    def add_literal(self, value, type_):
+        var_ctx = self.func_directory['global'].vars_[type_]
+        addr = len(var_ctx)
+        var_ctx[value] = VarRecord(addr, None, True)
+        self.constants[type_][addr] = value
+        return addr
+
     def get_literal(self, literal, type_):
         if self.negative:
             literal = f'-{literal}'
