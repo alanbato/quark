@@ -15,6 +15,10 @@ class FuncRecord:
     start_: int = attr.ib(0)
     params_addrs: List[int] = attr.ib(attr.Factory(list))
 
+    def next_addr(type_):
+        # Tenemos que tomar en cuenta el tipo, por lo que 1 solo numero no basta
+        pass
+
 
 @attr.s
 class VarRecord:
@@ -217,6 +221,23 @@ class Compiler:
         self.operand_stack.append(
             Operand(literal, type_, addr, True)
         )
+    
+    def start_list(self):
+        # Da de alta la lista y es a la que se le agregan los resultados de las expresiones
+        # Creo que necesitamos un stack de listas para permitir que haga listas dentro de listas,
+        # Ya que la gramática lo permite
+        self.func_directory[self.function_stack[-1]]
+        pass
+
+    def add_to_list(self):
+        # Recibe el ultimo operando, resultado de la expression,
+        # valida que sea del tipo de la lista y si sí, agrega el elemento
+        pass
+
+    def end_list(self):
+        # Termina la lista en el tope del stack y realiza las operaciones
+        # necesarias de tamaños y eso
+        pass
 
     def check_function(self, ident):
         if ident not in self.func_directory:

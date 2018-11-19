@@ -85,7 +85,10 @@ varconst:
 	| CONST_F {c.get_literal($CONST_F.text, "Float")};
 list:
 	']' {c.get_literal('[]', "[Any]")}						# EmptyList
-	| expression {c.add_to_list()} (',' expression {c.add_to_list()})* ']' {c.end_list()}	# ListExpr
+	| expression {
+c.start_list()
+c.add_to_list()
+} (',' expression {c.add_to_list()})* ']' {c.end_list()}	# ListExpr
 	;
 
 block: statement (statement)*;
