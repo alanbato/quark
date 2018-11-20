@@ -7,6 +7,6 @@ def factorial(n: Int) -> Int {
   }
 }
 
-Int n <- input();
+Int n <- 4;
 Int res <- factorial(n);
 print(res);

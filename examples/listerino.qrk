@@ -1,0 +1,13 @@
+def magic(x: [Int]) -> [Int] {
+  default {
+    [Int] y <- tail(x);
+    y;
+  }
+}
+
+[Int] enigma <- magic([1, 2, 3]);
+[Int] enigma2 <- magic([1, 2, 3, 4]);
+print(enigma);
+a <- 1 
+
+dim(1, 3)

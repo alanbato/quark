@@ -2,7 +2,7 @@ def bigger(x: Int, list: [Int]) -> [Int] {
   (list = []) {
     [];
   }
-  (x <= head(list)) {
+  (head(list) > x) {
     append([head(list)], bigger(x, tail(list)));
   }
   default {
@@ -14,8 +14,8 @@ def smaller(x: Int, list: [Int]) -> [Int] {
   (list = []) {
     [];
   }
-  (x > head(list)) {
-    append([head(list)], smaller(x, list));
+  (head(list) < x) {
+    append([head(list)], smaller(x, tail(list)));
   }
   default {
     smaller(x, tail(list));
@@ -30,6 +30,9 @@ def quicksort(list: [Int]) -> [Int] {
     Int first <- head(list);
     [Int] greater <- bigger(first, tail(list));
     [Int] lower <- smaller(first, tail(list));
+    print(lower);
+    print(first);
+    print(greater);
     [Int] first_list <- [first];
     append(append(quicksort(lower), first_list), quicksort(greater));
   }

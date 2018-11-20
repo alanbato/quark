@@ -1541,14 +1541,14 @@ class QuarkParser ( Parser ):
                 self.enterOuterAlt(localctx, 4)
                 self.state = 230
                 self.match(QuarkParser.T__33)
-                c.get_literal('True', "Bool")
+                c.get_literal(True, "Bool")
                 pass
             elif token in [QuarkParser.T__34]:
                 localctx = QuarkParser.FalseContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
                 self.state = 232
                 self.match(QuarkParser.T__34)
-                c.get_literal('False', "Bool")
+                c.get_literal(False, "Bool")
                 pass
             elif token in [QuarkParser.T__14]:
                 localctx = QuarkParser.FalseContext(self, localctx)

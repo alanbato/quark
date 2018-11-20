@@ -1,4 +1,5 @@
 from copy import deepcopy
+from collections import defaultdict
 
 
 class VirtualMachine():
@@ -8,6 +9,7 @@ class VirtualMachine():
     type_directory = {}
     memory = [None]*10000
     memory_stack = [memory]
+    list_table = defaultdict(list)
     params = []
     param_defs = []
     call_stack = []
@@ -25,7 +27,10 @@ class VirtualMachine():
 
         for type_, variables in constants.items():
             for addr, value in variables.items():
-                value
+                if type_ == 'Int':
+                    value = int(value)
+                elif type_ == 'Float':
+                    value = float(value)
                 self.set_value(addr, value, type_, True)
 
     def get_value(self, addr, type_, is_global=False):
@@ -54,9 +59,9 @@ class VirtualMachine():
         else:
             search_memory = self.memory
         if type_ == "Int":
-            search_memory[self.INT_BASE + addr] = int(value)
+            search_memory[self.INT_BASE + addr] = value
         elif type_ == "Float":
-            search_memory[self.FLOAT_BASE + addr] = float(value)
+            search_memory[self.FLOAT_BASE + addr] = value
         elif type_ == "Bool":
             search_memory[self.BOOL_BASE +
                           addr] = value
@@ -72,40 +77,52 @@ class VirtualMachine():
         self.param_defs.append(param)  # Es append o insert(0,) ?
 
     def print_(self):
-        counter = 0
-
-        def recursive_print(param):
-            nonlocal counter
-            if len(param.dim) == 1:
-                counter += 1
-            else:
-                print('[', end='')
-                for dim in range(param.dim[0][1]):
-                    value = self.get_value(param.address + i,
-                                           param.type_, param.is_global)
-                    print(value, end=',')
-                print(']')
         param = self.params.pop()
+        print(self.memory[:250])
         if param.dim:
-            print(param)
-            recursive_print(param)
+            print("")
         else:
             param_value = self.get_value(
                 param.address, param.type_, param.is_global)
             print("DEBUG:", param_value)
 
+    def append_(self, operand):
+        print("append")
+        param1 = self.params.pop()
+        param2 = self.params.pop()
+        print(param1, param2)
+        counter = 0
+        for i in range(5):
+            value = self.get_value(
+                param1.address + counter, param1.type_, param1.is_global)
+            counter += 1
+            if value is None:
+                break
+            self.set_value(operand.address + counter, value,
+                           param1.type_, param1.is_global)
+        for i in range(5):
+            value = self.get_value(
+                param2.address + counter, param2.type_, param2.is_global)
+            counter += 1
+            if value is None:
+                break
+            self.set_value(operand.address + counter, value,
+                           param2.type_, param2.is_global)
+
     def head(self, operand):
         param = self.params.pop()
-        value = self.get_value(param.address, param.type_, param.is_global)
-        if value is None:
+        if param.address in self.list_table:
+            value = self.list_table[0]
+            self.set_value(operand.address, value,
+                           param.type_, param.is_global)
+        else:
             self.set_value(operand.address, '[]',
                            '[Any]', param.is_global)
             return
-        else:
-            self.set_value(operand.address, value,
-                           param.type_, param.is_global)
+        value = self.get_value(param.address, param.type_, param.is_global)
 
     def tail(self, operand):
+        print("tail")
         param = self.params.pop()
         param_address = param.address + 1
         value = self.get_value(
@@ -129,6 +146,7 @@ class VirtualMachine():
     def era(self, func_name):
         new_memory = [None]*10000
         temp_memory = []
+        print(func_name)
         self.param_defs = self.func_directory[func_name].params_addrs
         for i, param in enumerate(self.params):
             if param.dim:
@@ -156,6 +174,7 @@ class VirtualMachine():
         self.param_defs = []
 
     def handle_return(self, op):
+        print(self.list_table)
         value = self.get_value(op.address, op.type_, op.is_global)
         go_sub_idx = self.call_stack[-1] - 1
         right_address = self.quadruples[go_sub_idx].right
@@ -208,6 +227,8 @@ class VirtualMachine():
                 is_global = quad.left.is_global
                 value = self.get_value(value_addr, value_type, is_global)
                 result = quad.result
+                if result.dim:
+                    value = self.list_table[value_addr]
                 self.set_value(result.address, value,
                                result.type_, result.is_global)
             elif quad.operator == 'PRINT':
@@ -218,12 +239,15 @@ class VirtualMachine():
                 self.tail(quad.left)
             elif quad.operator == 'INPUT':
                 self.input_(quad.left)
+            elif quad.operator == 'APPEND':
+                self.append_(quad.left)
             elif quad.operator == 'COPYVAL':
                 from_ = quad.left
                 value = self.get_value(
                     from_.address, from_.type_, from_.is_global)
                 address = quad.result
-                self.set_value(address, value, 'Int')
+                lst = self.list_table[address]
+                lst.append(value)
             elif quad.operator == 'GOSUB':
                 self.call_stack.append(i + 1)
                 i = quad.result

@@ -271,9 +271,6 @@ class Compiler:
         # valida que sea del tipo de la lista y si sí, agrega el elemento
         operand = self.operand_stack[-1]
         type_ = operand.type_
-        if self.list_stack[0].addr is None:
-            function = self.func_directory[self.function_stack[-1]]
-            # self.list_stack[0].addr = function.next_addr(type_)
         self.list_stack[-1].primitive_type = type_.strip('[]')
         self.list_stack[-1].type_ = f'[{type_}]'
 
@@ -317,10 +314,10 @@ class Compiler:
 
         if len(self.list_stack) == 1:
             # function.update_addr(listdef.primitive_type, listdef.total)
+            listdef.addr = function.next_addr(listdef.primitive_type)
             for quad_idx in self.copy_val_queue:
                 quad = self.quadruples[quad_idx]
-                quad.result = function.next_addr(listdef.primitive_type)
-            listdef.addr = self.quadruples[self.copy_val_queue[0]].result
+                quad.result = listdef.addr
             self.copy_val_queue = []
             self.list_dims = {}
         self.list_stack.pop()
