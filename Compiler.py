@@ -322,6 +322,7 @@ class Compiler:
                 quad.result = function.next_addr(listdef.primitive_type)
             listdef.addr = self.quadruples[self.copy_val_queue[0]].result
             self.copy_val_queue = []
+            self.list_dims = {}
         self.list_stack.pop()
         self.operand_stack.append(
             Operand("list", listdef.type_, listdef.addr,
@@ -346,7 +347,7 @@ class Compiler:
             self.func_directory[func_name].vars_[
                 function.type_][f"__T{self.temp}__"] = VarRecord(addr)
             result_operand = Operand(
-                f"__T{self.temp}__", 'Int', addr, func_name == 'global')
+                f"__T{self.temp}__head", 'Int', addr, func_name == 'global')
             self.operand_stack.append(result_operand)
             self.quadruples.append(Quad("HEAD", result_operand))
             self.temp += 1
@@ -357,9 +358,20 @@ class Compiler:
             self.func_directory[func_name].vars_[
                 'Int'][f"__T{self.temp}__"] = VarRecord(addr)
             result_operand = Operand(
-                f"__T{self.temp}__", '[Any]', addr, func_name == 'global', [(25, 1)])
+                f"__T{self.temp}__tail", '[Any]', addr, func_name == 'global', [(25, 1)])
             self.operand_stack.append(result_operand)
             self.quadruples.append(Quad("TAIL", result_operand))
+            self.temp += 1
+        elif ident == 'append':
+            func_name = self.function_stack[-1]
+            addr = self.func_directory[func_name].next_addr('Int')
+            self.func_directory[func_name].update_addr('Int', 25)
+            self.func_directory[func_name].vars_[
+                'Int'][f"__T{self.temp}__"] = VarRecord(addr)
+            result_operand = Operand(
+                f"__T{self.temp}__append", '[Any]', addr, func_name == 'global', [(25, 1)])
+            self.operand_stack.append(result_operand)
+            self.quadruples.append(Quad("APPEND", result_operand))
             self.temp += 1
         elif ident == 'input':
             func_name = self.function_stack[-1]
@@ -377,7 +389,7 @@ class Compiler:
             func_name = self.function_stack[-1]
             addr = self.func_directory[func_name].next_addr(function.type_)
             self.func_directory[func_name].vars_[
-                function.type_][f"__T{self.temp}__"] = VarRecord(addr)
+                function.type_.strip('[]')][f"__T{self.temp}__"] = VarRecord(addr)
             return_operand = Operand(
                 f"__T{self.temp}__", function.type_, addr, func_name == 'global')
             self.operand_stack.append(return_operand)

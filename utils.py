@@ -37,6 +37,8 @@ def check_operation_type(op, t1, t2):
                 return FLOAT
         raise TypeError(TYPE_ERROR.format(op, t1, t2))
     elif op == "*":
+        if t1 == INT and t2 == INT:
+            return INT
         if t1 == FLOAT:
             if t2 in (INT, FLOAT):
                 return FLOAT
