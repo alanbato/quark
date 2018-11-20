@@ -1,0 +1,15 @@
+def find(elem: Int, vect: [Int]) -> Bool {
+  (elem = head(vect)) {
+    True;
+  }
+  (vect = []) {
+    False;
+  }
+  default {
+    find(elem, tail(vect));
+  }
+}
+
+[Int] arr_1 <- [1, 2, 3];
+print(find(5, arr_1));
+print(find(2, arr_1));

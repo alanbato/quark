@@ -72,8 +72,8 @@ factor:
 	varconst													# Positive
 	| '(-' {c.set_negative()} varconst ')'						# Negative
 	| '(' {c.start_parens()} expression ')' {c.end_parens()}	# Parens
-	| 'True' {c.get_literal('True', "Bool")}					# True
-	| 'False' {c.get_literal('False', "Bool")}					# False
+	| 'True' {c.get_literal(True, "Bool")}						# True
+	| 'False' {c.get_literal(False, "Bool")}					# False
 	| 'non' {c.get_literal('non', "non")}						# False
 	| STRING {c.get_literal($STRING.text, "String")}			# StringLiteral
 	| '[' list_def												# ListStart;
@@ -84,9 +84,8 @@ varconst:
 	| CONST_F {c.get_literal($CONST_F.text, "Float")};
 list_def:
 	']' {c.get_literal('[]', "[Any]")} # EmptyList
-	| expression {
-c.start_list()
-c.add_to_list()
+	| {c.start_list()} expression {
+c.create_first(); c.add_to_list()
 } (',' expression {c.add_to_list()})* ']' {c.end_list()} # ListExpr;
 
 block: statement (statement)*;

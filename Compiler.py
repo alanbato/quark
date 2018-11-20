@@ -14,10 +14,28 @@ class FuncRecord:
     params_: int = attr.ib(0)
     start_: int = attr.ib(0)
     params_addrs: List[int] = attr.ib(attr.Factory(list))
+    var_counters: Dict[str, int] = attr.ib(attr.Factory(dict))
 
-    def next_addr(type_):
-        # Tenemos que tomar en cuenta el tipo, por lo que 1 solo numero no basta
-        pass
+    def next_addr(self, type_):
+        if type_ in self.var_counters:
+            self.var_counters[type_] += 1
+        else:
+            self.var_counters[type_] = 0
+        return self.var_counters[type_]
+
+    def update_addr(self, type_, length):
+        if type_ in self.var_counters:
+            self.var_counters[type_] += length - 1
+        else:
+            self.var_counters[type_] = length - 1
+
+
+@attr.s
+class ListDef:
+    type_: str = attr.ib(None)
+    primitive_type: str = attr.ib(None)
+    total: int = attr.ib(0)
+    addr: int = attr.ib(None)
 
 
 @attr.s
@@ -33,6 +51,7 @@ class Operand:
     type_: str = attr.ib()
     address: int = attr.ib(None)
     is_global: bool = attr.ib(False)
+    dim: list = attr.ib(None)
 
 
 @attr.s
@@ -66,8 +85,12 @@ class Compiler:
     function_stack = ["global"]
     operand_stack = []
     operator_stack = []
+    list_dims = {}
+    list_stack = []
+    copy_val_queue = []
     quadruples = []
-    constants = {'Int': {}, 'Float': {}, 'String': {}}
+    constants = {'Int': {}, 'Float': {}, 'String': {},
+                 'Bool': {}, 'non': {}, '[Any]': {}}
     gotos = []
     temp = 0  # <- Es el id de variables temporales?
     # Memory = namedtuple('Memory', ['number', 'value'])
@@ -120,9 +143,15 @@ class Compiler:
         function_name = self.function_stack[-1]
         function = self.func_directory[function_name]
         function.params_ += 1
-        addr = len(function.vars_[type_])
+        dim = False
+        if type_.startswith('['):
+            dim = True
+            type_ = type_.strip('[]')
+        addr = function.next_addr(type_)
         function.vars_[type_][ident] = VarRecord(addr, None)
         function.params_addrs.append(addr)
+        if dim:
+            function.update_addr(type_, 100)
         # self.quadruples.append(
         #     Quad("PARAMDEF", ident, type_, addr)
         # )
@@ -162,9 +191,7 @@ class Compiler:
             )
             # Create new temp variable
             func_name = self.function_stack[-1]
-            addr = len(self.func_directory[func_name].vars_[return_type])
-            self.func_directory[func_name].vars_[
-                return_type][f"__T{self.temp}__"] = VarRecord(addr)
+            addr = self.func_directory[func_name].next_addr(return_type)
             return_operand = Operand(
                 f"__T{self.temp}__", return_type, addr, func_name == 'global')
             self.operand_stack.append(return_operand)
@@ -184,7 +211,8 @@ class Compiler:
             for var_type_, vars_ in var_ctx.items():
                 if ident in vars_:
                     self.operand_stack.append(
-                        Operand(ident, var_type_, vars_[ident].addr)
+                        Operand(ident, var_type_, vars_[
+                                ident].addr, False, vars_[ident].dim)
                     )
                     break
             else:
@@ -200,7 +228,8 @@ class Compiler:
             for var_type_, vars_ in var_ctx.items():
                 if ident in vars_:
                     self.operand_stack.append(
-                        Operand(ident, var_type_, vars_[ident].addr, True)
+                        Operand(ident, var_type_, vars_[
+                                ident].addr, True, vars_[ident].dim)
                     )
                 break
             else:
@@ -210,8 +239,9 @@ class Compiler:
                 'Supplying a specific context is not yet supported.')
 
     def add_literal(self, value, type_):
-        var_ctx = self.func_directory['global'].vars_[type_]
-        addr = len(var_ctx)
+        function = self.func_directory['global']
+        var_ctx = function.vars_[type_]
+        addr = function.next_addr(type_)
         var_ctx[value] = VarRecord(addr, None, True)
         self.constants[type_][addr] = value
         return addr
@@ -228,23 +258,75 @@ class Compiler:
         self.operand_stack.append(
             Operand(literal, type_, addr, True)
         )
-    
+
     def start_list(self):
         # Da de alta la lista y es a la que se le agregan los resultados de las expresiones
         # Creo que necesitamos un stack de listas para permitir que haga listas dentro de listas,
         # Ya que la gramática lo permite
-        self.func_directory[self.function_stack[-1]]
-        pass
+        # function = self.func_directory[self.function_stack[-1]]
+        self.list_stack.append(ListDef())
+
+    def create_first(self):
+        # Recibe el ultimo operando, resultado de la expression,
+        # valida que sea del tipo de la lista y si sí, agrega el elemento
+        operand = self.operand_stack[-1]
+        type_ = operand.type_
+        if self.list_stack[0].addr is None:
+            function = self.func_directory[self.function_stack[-1]]
+            # self.list_stack[0].addr = function.next_addr(type_)
+        self.list_stack[-1].primitive_type = type_.strip('[]')
+        self.list_stack[-1].type_ = f'[{type_}]'
 
     def add_to_list(self):
         # Recibe el ultimo operando, resultado de la expression,
         # valida que sea del tipo de la lista y si sí, agrega el elemento
-        pass
+        operand = self.operand_stack.pop()
+        type_ = operand.type_
+        list_def = self.list_stack[-1]
+        list_def.total += 1
+        element_type = list_def.type_[1:-1]
+        if type_ != element_type:
+            raise TypeError(
+                f"Type of elements mismatch: Expected {element_type} and got {type_}")
+        if list_def.primitive_type == type_:
+            self.copy_val_queue.append(len(self.quadruples))
+            self.quadruples.append(
+                Quad("COPYVAL", operand, None, None)
+            )
 
     def end_list(self):
         # Termina la lista en el tope del stack y realiza las operaciones
         # necesarias de tamaños y eso
-        pass
+        listdef = self.list_stack[-1]
+        key = len(self.list_stack)
+        function = self.func_directory[self.function_stack[-1]]
+        r = 1
+        if key not in self.list_dims:
+            self.list_dims[key] = self.list_stack[-1].total
+        else:
+            if self.list_dims[key] != self.list_stack[-1].total:
+                raise Exception("List dimensions do not match")
+        dim = []
+        if key == 1:
+            for _, v in self.list_dims.items():
+                r *= v
+            for i in range(1, len(self.list_dims) + 1):
+                m = int(r / self.list_dims[i])
+                dim.append((self.list_dims[i], m))
+                r /= self.list_dims[i]
+
+        if len(self.list_stack) == 1:
+            # function.update_addr(listdef.primitive_type, listdef.total)
+            for quad_idx in self.copy_val_queue:
+                quad = self.quadruples[quad_idx]
+                quad.result = function.next_addr(listdef.primitive_type)
+            listdef.addr = self.quadruples[self.copy_val_queue[0]].result
+            self.copy_val_queue = []
+        self.list_stack.pop()
+        self.operand_stack.append(
+            Operand("list", listdef.type_, listdef.addr,
+                    self.function_stack[-1] == "global", dim)
+        )
 
     def check_function(self, ident):
         if ident not in self.func_directory:
@@ -258,20 +340,42 @@ class Compiler:
         if ident == 'print':
             self.quadruples.append(Quad("PRINT"))
             self.operand_stack.append(Operand('non', 'non', 0, True))
+        elif ident == 'head':
+            func_name = self.function_stack[-1]
+            addr = self.func_directory[func_name].next_addr('Int')
+            self.func_directory[func_name].vars_[
+                function.type_][f"__T{self.temp}__"] = VarRecord(addr)
+            result_operand = Operand(
+                f"__T{self.temp}__", 'Int', addr, func_name == 'global')
+            self.operand_stack.append(result_operand)
+            self.quadruples.append(Quad("HEAD", result_operand))
+            self.temp += 1
+        elif ident == 'tail':
+            func_name = self.function_stack[-1]
+            addr = self.func_directory[func_name].next_addr('Int')
+            self.func_directory[func_name].update_addr('Int', 25)
+            self.func_directory[func_name].vars_[
+                'Int'][f"__T{self.temp}__"] = VarRecord(addr)
+            result_operand = Operand(
+                f"__T{self.temp}__", '[Any]', addr, func_name == 'global', [(25, 1)])
+            self.operand_stack.append(result_operand)
+            self.quadruples.append(Quad("TAIL", result_operand))
+            self.temp += 1
         elif ident == 'input':
             func_name = self.function_stack[-1]
-            addr = len(self.func_directory[func_name].vars_['Int'])
+            addr = self.func_directory[func_name].next_addr('Int')
             self.func_directory[func_name].vars_[
                 function.type_][f"__T{self.temp}__"] = VarRecord(addr)
             result_operand = Operand(
                 'input', 'Int', addr, func_name == 'global')
             self.operand_stack.append(result_operand)
             self.quadruples.append(Quad("INPUT", result_operand))
+            self.temp += 1
         else:
             self.quadruples.append(Quad("ERA", ident, None, None))
             # Create temp variable
             func_name = self.function_stack[-1]
-            addr = len(self.func_directory[func_name].vars_[function.type_])
+            addr = self.func_directory[func_name].next_addr(function.type_)
             self.func_directory[func_name].vars_[
                 function.type_][f"__T{self.temp}__"] = VarRecord(addr)
             return_operand = Operand(
@@ -282,18 +386,25 @@ class Compiler:
             self.quadruples.append(Quad("GOSUB", ident, addr, function.start_))
 
     def handle_assignment(self, ident, type_):
-        var_ctx = self.func_directory[self.function_stack[-1]].vars_
+        function = self.func_directory[self.function_stack[-1]]
+        var_ctx = function.vars_
+        operand = self.operand_stack.pop()
         for var_type_, vars_ in var_ctx.items():
             if ident in vars_:
                 raise Exception(
                     f"Variable {ident} already defined with type {var_type_}")
         else:
-            addr = len(var_ctx[type_])
+            if type_.startswith('['):
+                type_ = type_.strip('[]')
+                addr = operand.address
+            else:
+                addr = function.next_addr(type_)
             is_global = self.function_stack[-1] == 'global'
-            var_ctx[type_][ident] = VarRecord(addr, None)
+            var_ctx[type_][ident] = VarRecord(addr, operand.dim, is_global)
+
         self.quadruples.append(
-            Quad('ASSIGN', self.operand_stack.pop(),
-                 None, Operand(ident, type_, addr, is_global))
+            Quad('ASSIGN', operand,
+                 None, Operand(ident, type_, addr, is_global, operand.dim))
         )
         self.operand_stack.append(Operand('non', 'non', 0, True))
 

@@ -2,6 +2,8 @@
 from collections import namedtuple
 
 INT = "Int"
+ANY = "Any"
+ARR_ANY = "[Any]"
 STRING = "String"
 FLOAT = "Float"
 BOOL = "Bool"
@@ -57,34 +59,46 @@ def check_operation_type(op, t1, t2):
             return INT
         raise TypeError(TYPE_ERROR.format(op, t1, t2))
     elif op == ">":
+        if t1 == ANY or t2 == ANY or t1 == ARR_ANY or t2 == ARR_ANY:
+            return BOOL
         if t1 == STRING and t2 == STRING:
             return BOOL
         if t1 in (INT, FLOAT) and t2 in (INT, FLOAT):
             return BOOL
         raise TypeError(TYPE_ERROR.format(op, t1, t2))
     elif op == ">=":
+        if t1 == ANY or t2 == ANY or t1 == ARR_ANY or t2 == ARR_ANY:
+            return BOOL
         if t1 == STRING and t2 == STRING:
             return BOOL
         if t1 in (INT, FLOAT) and t2 in (INT, FLOAT):
             return BOOL
         raise TypeError(TYPE_ERROR.format(op, t1, t2))
     elif op == "=":
+        if t1 == ANY or t2 == ANY or t1 == ARR_ANY or t2 == ARR_ANY:
+            return BOOL
         if t1 == t2:
             return BOOL
         raise TypeError(TYPE_ERROR.format(op, t1, t2))
     elif op == "<":
+        if t1 == ANY or t2 == ANY or t1 == ARR_ANY or t2 == ARR_ANY:
+            return BOOL
         if t1 == STRING and t2 == STRING:
             return BOOL
         if t1 in (INT, FLOAT) and t2 in (INT, FLOAT):
             return BOOL
         raise TypeError(TYPE_ERROR.format(op, t1, t2))
     elif op == "<=":
+        if t1 == ANY or t2 == ANY or t1 == ARR_ANY or t2 == ARR_ANY:
+            return BOOL
         if t1 == STRING and t2 == STRING:
             return BOOL
         if t1 in (INT, FLOAT) and t2 in (INT, FLOAT):
             return BOOL
         raise TypeError(TYPE_ERROR.format(op, t1, t2))
     elif op == "!=":
+        if t1 == ANY or t2 == ANY or t1 == ARR_ANY or t2 == ARR_ANY:
+            return BOOL
         if t1 == t2:
             return BOOL
         raise TypeError(TYPE_ERROR.format(op, t1, t2))

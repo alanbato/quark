@@ -16,7 +16,7 @@ constants = None
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3,")
-        buf.write("\u014c\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\u014d\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
         buf.write("\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\3\2")
@@ -39,22 +39,22 @@ def serializedATN():
         buf.write("\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17\3\17")
         buf.write("\3\17\3\17\3\17\5\17\u00f3\n\17\3\20\3\20\3\20\3\20\3")
         buf.write("\20\3\20\3\20\5\20\u00fc\n\20\3\21\3\21\3\21\3\21\3\21")
-        buf.write("\3\21\3\21\3\21\7\21\u0106\n\21\f\21\16\21\u0109\13\21")
-        buf.write("\3\21\3\21\3\21\5\21\u010e\n\21\3\22\3\22\7\22\u0112\n")
-        buf.write("\22\f\22\16\22\u0115\13\22\3\23\3\23\3\23\3\23\3\23\3")
-        buf.write("\23\5\23\u011d\n\23\3\24\3\24\3\24\3\24\5\24\u0123\n\24")
-        buf.write("\3\24\3\24\7\24\u0127\n\24\f\24\16\24\u012a\13\24\3\24")
-        buf.write("\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\3\26\3\26\3\26")
-        buf.write("\3\26\3\26\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27")
-        buf.write("\3\27\5\27\u0144\n\27\3\30\3\30\3\30\3\30\5\30\u014a\n")
-        buf.write("\30\3\30\2\2\31\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36")
-        buf.write(" \"$&(*,.\2\2\2\u0165\2\60\3\2\2\2\4L\3\2\2\2\6Y\3\2\2")
-        buf.write("\2\b^\3\2\2\2\ny\3\2\2\2\f}\3\2\2\2\16\177\3\2\2\2\20")
-        buf.write("\u0085\3\2\2\2\22\u0090\3\2\2\2\24\u009c\3\2\2\2\26\u00a5")
-        buf.write("\3\2\2\2\30\u00bc\3\2\2\2\32\u00cb\3\2\2\2\34\u00f2\3")
-        buf.write("\2\2\2\36\u00fb\3\2\2\2 \u010d\3\2\2\2\"\u010f\3\2\2\2")
-        buf.write("$\u011c\3\2\2\2&\u011e\3\2\2\2(\u012e\3\2\2\2*\u0134\3")
-        buf.write("\2\2\2,\u0143\3\2\2\2.\u0149\3\2\2\2\60\61\7\3\2\2\61")
+        buf.write("\3\21\3\21\3\21\3\21\7\21\u0107\n\21\f\21\16\21\u010a")
+        buf.write("\13\21\3\21\3\21\3\21\5\21\u010f\n\21\3\22\3\22\7\22\u0113")
+        buf.write("\n\22\f\22\16\22\u0116\13\22\3\23\3\23\3\23\3\23\3\23")
+        buf.write("\3\23\5\23\u011e\n\23\3\24\3\24\3\24\3\24\5\24\u0124\n")
+        buf.write("\24\3\24\3\24\7\24\u0128\n\24\f\24\16\24\u012b\13\24\3")
+        buf.write("\24\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\3\26\3\26")
+        buf.write("\3\26\3\26\3\26\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27")
+        buf.write("\3\27\3\27\5\27\u0145\n\27\3\30\3\30\3\30\3\30\5\30\u014b")
+        buf.write("\n\30\3\30\2\2\31\2\4\6\b\n\f\16\20\22\24\26\30\32\34")
+        buf.write("\36 \"$&(*,.\2\2\2\u0166\2\60\3\2\2\2\4L\3\2\2\2\6Y\3")
+        buf.write("\2\2\2\b^\3\2\2\2\ny\3\2\2\2\f}\3\2\2\2\16\177\3\2\2\2")
+        buf.write("\20\u0085\3\2\2\2\22\u0090\3\2\2\2\24\u009c\3\2\2\2\26")
+        buf.write("\u00a5\3\2\2\2\30\u00bc\3\2\2\2\32\u00cb\3\2\2\2\34\u00f2")
+        buf.write("\3\2\2\2\36\u00fb\3\2\2\2 \u010e\3\2\2\2\"\u0110\3\2\2")
+        buf.write("\2$\u011d\3\2\2\2&\u011f\3\2\2\2(\u012f\3\2\2\2*\u0135")
+        buf.write("\3\2\2\2,\u0144\3\2\2\2.\u014a\3\2\2\2\60\61\7\3\2\2\61")
         buf.write("\62\7\'\2\2\62\63\b\2\1\2\63\64\7\4\2\2\64\65\5\4\3\2")
         buf.write("\65\66\7\5\2\2\66\67\7\6\2\2\678\5\n\6\289\b\2\1\29B\7")
         buf.write("\7\2\2:;\5\22\n\2;<\7\7\2\2<=\5\"\22\2=>\7\b\2\2>?\b\2")
@@ -129,40 +129,41 @@ def serializedATN():
         buf.write("\2\u00f9\u00fa\7*\2\2\u00fa\u00fc\b\20\1\2\u00fb\u00f4")
         buf.write("\3\2\2\2\u00fb\u00f5\3\2\2\2\u00fb\u00f7\3\2\2\2\u00fb")
         buf.write("\u00f9\3\2\2\2\u00fc\37\3\2\2\2\u00fd\u00fe\7\24\2\2\u00fe")
-        buf.write("\u010e\b\21\1\2\u00ff\u0100\5\24\13\2\u0100\u0107\b\21")
-        buf.write("\1\2\u0101\u0102\7\13\2\2\u0102\u0103\5\24\13\2\u0103")
-        buf.write("\u0104\b\21\1\2\u0104\u0106\3\2\2\2\u0105\u0101\3\2\2")
-        buf.write("\2\u0106\u0109\3\2\2\2\u0107\u0105\3\2\2\2\u0107\u0108")
-        buf.write("\3\2\2\2\u0108\u010a\3\2\2\2\u0109\u0107\3\2\2\2\u010a")
-        buf.write("\u010b\7\24\2\2\u010b\u010c\b\21\1\2\u010c\u010e\3\2\2")
-        buf.write("\2\u010d\u00fd\3\2\2\2\u010d\u00ff\3\2\2\2\u010e!\3\2")
-        buf.write("\2\2\u010f\u0113\5$\23\2\u0110\u0112\5$\23\2\u0111\u0110")
-        buf.write("\3\2\2\2\u0112\u0115\3\2\2\2\u0113\u0111\3\2\2\2\u0113")
-        buf.write("\u0114\3\2\2\2\u0114#\3\2\2\2\u0115\u0113\3\2\2\2\u0116")
-        buf.write("\u0117\5(\25\2\u0117\u0118\7&\2\2\u0118\u011d\3\2\2\2")
-        buf.write("\u0119\u011a\5\24\13\2\u011a\u011b\7&\2\2\u011b\u011d")
-        buf.write("\3\2\2\2\u011c\u0116\3\2\2\2\u011c\u0119\3\2\2\2\u011d")
-        buf.write("%\3\2\2\2\u011e\u011f\7\'\2\2\u011f\u0120\b\24\1\2\u0120")
-        buf.write("\u0122\7\4\2\2\u0121\u0123\5\24\13\2\u0122\u0121\3\2\2")
-        buf.write("\2\u0122\u0123\3\2\2\2\u0123\u0128\3\2\2\2\u0124\u0125")
-        buf.write("\7\13\2\2\u0125\u0127\5\24\13\2\u0126\u0124\3\2\2\2\u0127")
-        buf.write("\u012a\3\2\2\2\u0128\u0126\3\2\2\2\u0128\u0129\3\2\2\2")
-        buf.write("\u0129\u012b\3\2\2\2\u012a\u0128\3\2\2\2\u012b\u012c\7")
-        buf.write("\5\2\2\u012c\u012d\b\24\1\2\u012d\'\3\2\2\2\u012e\u012f")
-        buf.write("\5\n\6\2\u012f\u0130\7\'\2\2\u0130\u0131\7\26\2\2\u0131")
-        buf.write("\u0132\5\24\13\2\u0132\u0133\b\25\1\2\u0133)\3\2\2\2\u0134")
-        buf.write("\u0135\5,\27\2\u0135\u0136\5.\30\2\u0136\u0137\b\26\1")
-        buf.write("\2\u0137\u0138\7\2\2\3\u0138+\3\2\2\2\u0139\u0144\5\2")
-        buf.write("\2\2\u013a\u013b\5(\25\2\u013b\u013c\7&\2\2\u013c\u0144")
-        buf.write("\3\2\2\2\u013d\u013e\5\24\13\2\u013e\u013f\7&\2\2\u013f")
-        buf.write("\u0144\3\2\2\2\u0140\u0141\5\16\b\2\u0141\u0142\7&\2\2")
-        buf.write("\u0142\u0144\3\2\2\2\u0143\u0139\3\2\2\2\u0143\u013a\3")
-        buf.write("\2\2\2\u0143\u013d\3\2\2\2\u0143\u0140\3\2\2\2\u0144-")
-        buf.write("\3\2\2\2\u0145\u0146\5,\27\2\u0146\u0147\5.\30\2\u0147")
-        buf.write("\u014a\3\2\2\2\u0148\u014a\3\2\2\2\u0149\u0145\3\2\2\2")
-        buf.write("\u0149\u0148\3\2\2\2\u014a/\3\2\2\2\36BY^dhlpy}\u008b")
-        buf.write("\u0096\u00a2\u00b2\u00b9\u00c1\u00c8\u00d2\u00d9\u00f2")
-        buf.write("\u00fb\u0107\u010d\u0113\u011c\u0122\u0128\u0143\u0149")
+        buf.write("\u010f\b\21\1\2\u00ff\u0100\b\21\1\2\u0100\u0101\5\24")
+        buf.write("\13\2\u0101\u0108\b\21\1\2\u0102\u0103\7\13\2\2\u0103")
+        buf.write("\u0104\5\24\13\2\u0104\u0105\b\21\1\2\u0105\u0107\3\2")
+        buf.write("\2\2\u0106\u0102\3\2\2\2\u0107\u010a\3\2\2\2\u0108\u0106")
+        buf.write("\3\2\2\2\u0108\u0109\3\2\2\2\u0109\u010b\3\2\2\2\u010a")
+        buf.write("\u0108\3\2\2\2\u010b\u010c\7\24\2\2\u010c\u010d\b\21\1")
+        buf.write("\2\u010d\u010f\3\2\2\2\u010e\u00fd\3\2\2\2\u010e\u00ff")
+        buf.write("\3\2\2\2\u010f!\3\2\2\2\u0110\u0114\5$\23\2\u0111\u0113")
+        buf.write("\5$\23\2\u0112\u0111\3\2\2\2\u0113\u0116\3\2\2\2\u0114")
+        buf.write("\u0112\3\2\2\2\u0114\u0115\3\2\2\2\u0115#\3\2\2\2\u0116")
+        buf.write("\u0114\3\2\2\2\u0117\u0118\5(\25\2\u0118\u0119\7&\2\2")
+        buf.write("\u0119\u011e\3\2\2\2\u011a\u011b\5\24\13\2\u011b\u011c")
+        buf.write("\7&\2\2\u011c\u011e\3\2\2\2\u011d\u0117\3\2\2\2\u011d")
+        buf.write("\u011a\3\2\2\2\u011e%\3\2\2\2\u011f\u0120\7\'\2\2\u0120")
+        buf.write("\u0121\b\24\1\2\u0121\u0123\7\4\2\2\u0122\u0124\5\24\13")
+        buf.write("\2\u0123\u0122\3\2\2\2\u0123\u0124\3\2\2\2\u0124\u0129")
+        buf.write("\3\2\2\2\u0125\u0126\7\13\2\2\u0126\u0128\5\24\13\2\u0127")
+        buf.write("\u0125\3\2\2\2\u0128\u012b\3\2\2\2\u0129\u0127\3\2\2\2")
+        buf.write("\u0129\u012a\3\2\2\2\u012a\u012c\3\2\2\2\u012b\u0129\3")
+        buf.write("\2\2\2\u012c\u012d\7\5\2\2\u012d\u012e\b\24\1\2\u012e")
+        buf.write("\'\3\2\2\2\u012f\u0130\5\n\6\2\u0130\u0131\7\'\2\2\u0131")
+        buf.write("\u0132\7\26\2\2\u0132\u0133\5\24\13\2\u0133\u0134\b\25")
+        buf.write("\1\2\u0134)\3\2\2\2\u0135\u0136\5,\27\2\u0136\u0137\5")
+        buf.write(".\30\2\u0137\u0138\b\26\1\2\u0138\u0139\7\2\2\3\u0139")
+        buf.write("+\3\2\2\2\u013a\u0145\5\2\2\2\u013b\u013c\5(\25\2\u013c")
+        buf.write("\u013d\7&\2\2\u013d\u0145\3\2\2\2\u013e\u013f\5\24\13")
+        buf.write("\2\u013f\u0140\7&\2\2\u0140\u0145\3\2\2\2\u0141\u0142")
+        buf.write("\5\16\b\2\u0142\u0143\7&\2\2\u0143\u0145\3\2\2\2\u0144")
+        buf.write("\u013a\3\2\2\2\u0144\u013b\3\2\2\2\u0144\u013e\3\2\2\2")
+        buf.write("\u0144\u0141\3\2\2\2\u0145-\3\2\2\2\u0146\u0147\5,\27")
+        buf.write("\2\u0147\u0148\5.\30\2\u0148\u014b\3\2\2\2\u0149\u014b")
+        buf.write("\3\2\2\2\u014a\u0146\3\2\2\2\u014a\u0149\3\2\2\2\u014b")
+        buf.write("/\3\2\2\2\36BY^dhlpy}\u008b\u0096\u00a2\u00b2\u00b9\u00c1")
+        buf.write("\u00c8\u00d2\u00d9\u00f2\u00fb\u0108\u010e\u0114\u011d")
+        buf.write("\u0123\u0129\u0144\u014a")
         return buf.getvalue()
 
 
@@ -1723,7 +1724,7 @@ class QuarkParser ( Parser ):
         self.enterRule(localctx, 30, self.RULE_list_def)
         self._la = 0 # Token type
         try:
-            self.state = 267
+            self.state = 268
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [QuarkParser.T__17]:
@@ -1736,26 +1737,26 @@ class QuarkParser ( Parser ):
             elif token in [QuarkParser.T__1, QuarkParser.T__14, QuarkParser.T__16, QuarkParser.T__32, QuarkParser.T__33, QuarkParser.T__34, QuarkParser.ID, QuarkParser.CONST_I, QuarkParser.CONST_F, QuarkParser.STRING]:
                 localctx = QuarkParser.ListExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 253
+                c.start_list()
+                self.state = 254
                 self.expression()
 
-                c.start_list()
-                c.add_to_list()
+                c.create_first(); c.add_to_list()
 
-                self.state = 261
+                self.state = 262
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==QuarkParser.T__8:
-                    self.state = 255
-                    self.match(QuarkParser.T__8)
                     self.state = 256
+                    self.match(QuarkParser.T__8)
+                    self.state = 257
                     self.expression()
                     c.add_to_list()
-                    self.state = 263
+                    self.state = 264
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 264
+                self.state = 265
                 self.match(QuarkParser.T__17)
                 c.end_list()
                 pass
@@ -1804,15 +1805,15 @@ class QuarkParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 269
+            self.state = 270
             self.statement()
-            self.state = 273
+            self.state = 274
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << QuarkParser.T__1) | (1 << QuarkParser.T__9) | (1 << QuarkParser.T__11) | (1 << QuarkParser.T__12) | (1 << QuarkParser.T__13) | (1 << QuarkParser.T__14) | (1 << QuarkParser.T__15) | (1 << QuarkParser.T__16) | (1 << QuarkParser.T__32) | (1 << QuarkParser.T__33) | (1 << QuarkParser.T__34) | (1 << QuarkParser.ID) | (1 << QuarkParser.TYPE_ID) | (1 << QuarkParser.CONST_I) | (1 << QuarkParser.CONST_F) | (1 << QuarkParser.STRING))) != 0):
-                self.state = 270
+                self.state = 271
                 self.statement()
-                self.state = 275
+                self.state = 276
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1857,22 +1858,22 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.StatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 34, self.RULE_statement)
         try:
-            self.state = 282
+            self.state = 283
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,23,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 276
-                self.assignment()
                 self.state = 277
+                self.assignment()
+                self.state = 278
                 self.match(QuarkParser.T__35)
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 279
-                self.expression()
                 self.state = 280
+                self.expression()
+                self.state = 281
                 self.match(QuarkParser.T__35)
                 pass
 
@@ -1923,32 +1924,32 @@ class QuarkParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 284
+            self.state = 285
             localctx._ID = self.match(QuarkParser.ID)
             c.check_function((None if localctx._ID is None else localctx._ID.text))
-            self.state = 286
+            self.state = 287
             self.match(QuarkParser.T__1)
-            self.state = 288
+            self.state = 289
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << QuarkParser.T__1) | (1 << QuarkParser.T__14) | (1 << QuarkParser.T__16) | (1 << QuarkParser.T__32) | (1 << QuarkParser.T__33) | (1 << QuarkParser.T__34) | (1 << QuarkParser.ID) | (1 << QuarkParser.CONST_I) | (1 << QuarkParser.CONST_F) | (1 << QuarkParser.STRING))) != 0):
-                self.state = 287
+                self.state = 288
                 self.expression()
 
 
-            self.state = 294
+            self.state = 295
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==QuarkParser.T__8:
-                self.state = 290
-                self.match(QuarkParser.T__8)
                 self.state = 291
+                self.match(QuarkParser.T__8)
+                self.state = 292
                 self.expression()
-                self.state = 296
+                self.state = 297
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 297
+            self.state = 298
             self.match(QuarkParser.T__2)
             c.call_function((None if localctx._ID is None else localctx._ID.text))
             			
@@ -1999,13 +2000,13 @@ class QuarkParser ( Parser ):
         self.enterRule(localctx, 38, self.RULE_assignment)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 300
-            localctx._typeRule = self.typeRule()
             self.state = 301
-            localctx._ID = self.match(QuarkParser.ID)
+            localctx._typeRule = self.typeRule()
             self.state = 302
-            self.match(QuarkParser.T__19)
+            localctx._ID = self.match(QuarkParser.ID)
             self.state = 303
+            self.match(QuarkParser.T__19)
+            self.state = 304
             self.expression()
             c.handle_assignment((None if localctx._ID is None else localctx._ID.text), (None if localctx._typeRule is None else self._input.getText((localctx._typeRule.start,localctx._typeRule.stop))))
         except RecognitionException as re:
@@ -2053,12 +2054,12 @@ class QuarkParser ( Parser ):
         self.enterRule(localctx, 40, self.RULE_main)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 306
-            self.things()
             self.state = 307
+            self.things()
+            self.state = 308
             self.morethings()
             c.print_state(); c.save_state(self)
-            self.state = 309
+            self.state = 310
             self.match(QuarkParser.EOF)
         except RecognitionException as re:
             localctx.exception = re
@@ -2109,36 +2110,36 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.ThingsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 42, self.RULE_things)
         try:
-            self.state = 321
+            self.state = 322
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,26,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 311
+                self.state = 312
                 self.function()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 312
-                self.assignment()
                 self.state = 313
+                self.assignment()
+                self.state = 314
                 self.match(QuarkParser.T__35)
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 315
-                self.expression()
                 self.state = 316
+                self.expression()
+                self.state = 317
                 self.match(QuarkParser.T__35)
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 318
-                self.typedef()
                 self.state = 319
+                self.typedef()
+                self.state = 320
                 self.match(QuarkParser.T__35)
                 pass
 
@@ -2184,14 +2185,14 @@ class QuarkParser ( Parser ):
         localctx = QuarkParser.MorethingsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 44, self.RULE_morethings)
         try:
-            self.state = 327
+            self.state = 328
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [QuarkParser.T__0, QuarkParser.T__1, QuarkParser.T__9, QuarkParser.T__11, QuarkParser.T__12, QuarkParser.T__13, QuarkParser.T__14, QuarkParser.T__15, QuarkParser.T__16, QuarkParser.T__18, QuarkParser.T__32, QuarkParser.T__33, QuarkParser.T__34, QuarkParser.ID, QuarkParser.TYPE_ID, QuarkParser.CONST_I, QuarkParser.CONST_F, QuarkParser.STRING]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 323
-                self.things()
                 self.state = 324
+                self.things()
+                self.state = 325
                 self.morethings()
                 pass
             elif token in [QuarkParser.EOF]:
