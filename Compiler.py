@@ -148,13 +148,8 @@ class Compiler:
             dim = True
             type_ = type_.strip('[]')
         addr = function.next_addr(type_)
-        function.vars_[type_][ident] = VarRecord(addr, None)
+        function.vars_[type_][ident] = VarRecord(addr, dim)
         function.params_addrs.append(addr)
-        if dim:
-            function.update_addr(type_, 100)
-        # self.quadruples.append(
-        #     Quad("PARAMDEF", ident, type_, addr)
-        # )
 
     def check_user_def_type(self, type_id):
         if type_id not in self.type_directory:
@@ -207,8 +202,8 @@ class Compiler:
             self.negative = False
 
         if scope is None:
-            var_ctx = self.func_directory[self.function_stack[-1]].vars_
-            for var_type_, vars_ in var_ctx.items():
+            all_vars_ = self.func_directory[self.function_stack[-1]].vars_
+            for var_type_, vars_ in all_vars_.items():
                 if ident in vars_:
                     self.operand_stack.append(
                         Operand(ident, var_type_, vars_[
@@ -224,8 +219,8 @@ class Compiler:
                     # Global lookup succeeded, short-fuse
                     return
         elif scope == 'global':
-            var_ctx = self.func_directory['global'].vars_
-            for var_type_, vars_ in var_ctx.items():
+            all_vars_ = self.func_directory['global'].vars_
+            for var_type_, vars_ in all_vars_.items():
                 if ident in vars_:
                     self.operand_stack.append(
                         Operand(ident, var_type_, vars_[
@@ -239,8 +234,8 @@ class Compiler:
                 'Supplying a specific context is not yet supported.')
 
     def add_literal(self, value, type_):
-        function = self.func_directory['global']
-        var_ctx = function.vars_[type_]
+        var_ctx = self.get_var_ctx(type_, is_global=True)
+        function = self.func_directory[self.function_stack[-1]]
         addr = function.next_addr(type_)
         var_ctx[value] = VarRecord(addr, None, True)
         self.constants[type_][addr] = value
@@ -250,7 +245,7 @@ class Compiler:
         if self.negative:
             literal = f'-{literal}'
             self.negative = False
-        var_ctx = self.func_directory['global'].vars_[type_]
+        var_ctx = self.get_var_ctx(type_, is_global=True)
         if literal not in var_ctx:
             addr = self.add_literal(literal, type_)
         else:
@@ -351,11 +346,10 @@ class Compiler:
         elif ident == 'tail':
             func_name = self.function_stack[-1]
             addr = self.func_directory[func_name].next_addr('Int')
-            self.func_directory[func_name].update_addr('Int', 25)
             self.func_directory[func_name].vars_[
-                'Int'][f"__T{self.temp}__"] = VarRecord(addr)
+                'Int'][f"__T{self.temp}__"] = VarRecord(addr, True)
             result_operand = Operand(
-                f"__T{self.temp}__tail", '[Any]', addr, func_name == 'global', [(25, 1)])
+                f"__T{self.temp}__tail", '[Any]', addr, func_name == 'global', dim=True)
             self.operand_stack.append(result_operand)
             self.quadruples.append(Quad("TAIL", result_operand))
             self.temp += 1
@@ -366,7 +360,7 @@ class Compiler:
             self.func_directory[func_name].vars_[
                 'Int'][f"__T{self.temp}__"] = VarRecord(addr)
             result_operand = Operand(
-                f"__T{self.temp}__append", '[Any]', addr, func_name == 'global', [(25, 1)])
+                f"__T{self.temp}__append", '[Any]', addr, func_name == 'global', True)
             self.operand_stack.append(result_operand)
             self.quadruples.append(Quad("APPEND", result_operand))
             self.temp += 1
@@ -387,29 +381,35 @@ class Compiler:
             addr = self.func_directory[func_name].next_addr(function.type_)
             self.func_directory[func_name].vars_[
                 function.type_.strip('[]')][f"__T{self.temp}__"] = VarRecord(addr)
+            dim = function.type_.startswith('[')
             return_operand = Operand(
-                f"__T{self.temp}__", function.type_, addr, func_name == 'global')
+                f"__T{self.temp}__", function.type_, addr, func_name == 'global', dim)
             self.operand_stack.append(return_operand)
             self.temp += 1
             # Call function
             self.quadruples.append(Quad("GOSUB", ident, addr, function.start_))
 
+    def get_var_ctx(self, type_, is_global=False):
+        if type_.startswith('['):
+            type_ = type_.strip('[]')
+        func_name = "global" if is_global else self.function_stack[-1]
+        current_function = self.func_directory[func_name]
+        var_ctx = current_function.vars_[type_]
+        return var_ctx
+    
     def handle_assignment(self, ident, type_):
         function = self.func_directory[self.function_stack[-1]]
-        var_ctx = function.vars_
+        all_vars_ = function.vars_
         operand = self.operand_stack.pop()
-        for var_type_, vars_ in var_ctx.items():
+        for var_type_, vars_ in all_vars_.items():
             if ident in vars_:
                 raise Exception(
                     f"Variable {ident} already defined with type {var_type_}")
         else:
-            if type_.startswith('['):
-                type_ = type_.strip('[]')
-                addr = operand.address
-            else:
-                addr = function.next_addr(type_)
+            addr = function.next_addr(type_)
             is_global = self.function_stack[-1] == 'global'
-            var_ctx[type_][ident] = VarRecord(addr, operand.dim, is_global)
+            var_ctx = self.get_var_ctx(type_)
+            var_ctx[ident] = VarRecord(addr, operand.dim, is_global)
 
         self.quadruples.append(
             Quad('ASSIGN', operand,
