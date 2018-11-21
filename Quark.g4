@@ -1,7 +1,7 @@
 grammar Quark;
 
 @header {
-from compiler import Compiler
+from Compiler import Compiler
 c = Compiler()
 quadruples = None
 func_directory = None

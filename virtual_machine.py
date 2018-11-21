@@ -9,7 +9,7 @@ class VirtualMachine():
     type_directory = {}
     memory = [None]*10000
     memory_stack = [memory]
-    list_table =    defaultdict(list)
+    list_table = defaultdict(list)
     list_table_stack = [list_table]
     params = []
     param_defs = []
@@ -35,7 +35,7 @@ class VirtualMachine():
                 self.set_value(addr, value, type_, True)
 
     def get_value(self, addr, type_, is_global=False):
-        print(f"Get value at {addr} of {type_}. Global {is_global}")
+        # print(f"Get value at {addr} of {type_}. Global {is_global}")
         if type_.startswith('['):
             type_ = type_.strip('[]')
         if is_global:
@@ -54,7 +54,7 @@ class VirtualMachine():
             return search_memory[self.EMPTY_ARR + addr]
 
     def set_value(self, addr, value, type_, is_global=False):
-        print(f"Set value {value} in {addr} of {type_}. Global {is_global}")
+        # print(f"Set value {value} in {addr} of {type_}. Global {is_global}")
         if type_.startswith('['):
             type_ = type_.strip('[]')
         if is_global:
@@ -82,8 +82,9 @@ class VirtualMachine():
     def print_(self):
         param = self.params.pop()
         if param.dim:
-            print(self.list_table)
-            print(self.list_table[param.address])
+            param_value = self.get_value(
+                param.address, param.type_, param.is_global)
+            print("DEBUG:", self.list_table[param_value])
         else:
             param_value = self.get_value(
                 param.address, param.type_, param.is_global)
@@ -125,20 +126,18 @@ class VirtualMachine():
 
     def tail(self, operand):
         param = self.params.pop()
-        param_address = param.address + 1
-        
+        param_address = param.address
         value = self.get_value(
             param_address, param.type_, param.is_global)
         if value == '[]':
             self.set_value(operand.address, '[]', '[Any]', param.is_global)
             return
         else:
-            print("Before tail", self.list_table)
-            lst = self.list_table[value]
-            self.set_value(operand.address, operand.address, operand.type_, param.is_global)
+            lst = self.list_table[value][1:]
+            self.set_value(operand.address, operand.address,
+                           operand.type_, param.is_global)
             for elem in lst:
                 self.list_table[operand.address].append(elem)
-            print("After tail", self.list_table)
 
     def input_(self, op):
         value = input("Enter your input: ")
@@ -156,7 +155,8 @@ class VirtualMachine():
                 param_list = self.list_table[param.address]
                 param_def_addr = self.param_defs[i]
                 new_list_memory[param_def_addr] = param_list
-                self.set_value(param_def_addr, param.address, param.type_)
+                # Not sure if this should be the way
+                self.set_value(param_def_addr, param_def_addr, param.type_)
             else:
                 param_value = self.get_value(param.address, param.type_)
                 param_def_addr = self.param_defs[i]
@@ -174,6 +174,11 @@ class VirtualMachine():
         go_sub_idx = self.call_stack[-1] - 1
         right_address = self.quadruples[go_sub_idx].right
         search_memory = self.memory_stack[-2]
+        if op.dim:
+            self.list_table_stack[-2][right_address] = self.list_table[value]
+            search_memory[self.INT_BASE + right_address] = right_address
+            return
+
         if op.type_ == "Int":
             search_memory[self.INT_BASE + right_address] = int(value)
         elif op.type_ == "Float":

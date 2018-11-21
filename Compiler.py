@@ -378,12 +378,14 @@ class Compiler:
             self.quadruples.append(Quad("ERA", ident, None, None))
             # Create temp variable
             func_name = self.function_stack[-1]
-            addr = self.func_directory[func_name].next_addr(function.type_)
+            new_type = function.type_.strip('[]')
+            addr = self.func_directory[func_name].next_addr(new_type)
             self.func_directory[func_name].vars_[
-                function.type_.strip('[]')][f"__T{self.temp}__"] = VarRecord(addr)
+                new_type][f"__T{self.temp}__"] = VarRecord(addr)
             dim = function.type_.startswith('[')
             return_operand = Operand(
                 f"__T{self.temp}__", function.type_, addr, func_name == 'global', dim)
+            print(return_operand)
             self.operand_stack.append(return_operand)
             self.temp += 1
             # Call function
@@ -396,7 +398,7 @@ class Compiler:
         current_function = self.func_directory[func_name]
         var_ctx = current_function.vars_[type_]
         return var_ctx
-    
+
     def handle_assignment(self, ident, type_):
         function = self.func_directory[self.function_stack[-1]]
         all_vars_ = function.vars_
@@ -406,9 +408,13 @@ class Compiler:
                 raise Exception(
                     f"Variable {ident} already defined with type {var_type_}")
         else:
-            addr = function.next_addr(type_)
+            if type_.startswith('['):
+                new_type = type_.strip('[]')
+            else:
+                new_type = type_
+            addr = function.next_addr(new_type)
             is_global = self.function_stack[-1] == 'global'
-            var_ctx = self.get_var_ctx(type_)
+            var_ctx = self.get_var_ctx(new_type)
             var_ctx[ident] = VarRecord(addr, operand.dim, is_global)
 
         self.quadruples.append(

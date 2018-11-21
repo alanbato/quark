@@ -5,7 +5,7 @@ if __name__ is not None and "." in __name__:
 else:
     from QuarkParser import QuarkParser
 
-from compiler import Compiler
+from Compiler import Compiler
 c = Compiler()
 quadruples = None
 func_directory = None
