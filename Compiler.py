@@ -6,6 +6,7 @@ import pprint
 pp = pprint.PrettyPrinter()
 
 
+# Clase utilizada para guardar el registro de una función
 @attr.s
 class FuncRecord:
     # The _ is used to avoid a collision with a builtin or restricted name
@@ -16,6 +17,7 @@ class FuncRecord:
     params_addrs: List[int] = attr.ib(attr.Factory(list))
     var_counters: Dict[str, int] = attr.ib(attr.Factory(dict))
 
+    # Regresa la siguiente dirección libre en memoria para ese tipo
     def next_addr(self, type_):
         if type_ in self.var_counters:
             self.var_counters[type_] += 1
@@ -23,6 +25,7 @@ class FuncRecord:
             self.var_counters[type_] = 0
         return self.var_counters[type_]
 
+    # Hace un salto para guardar cierta cantidad de memoria
     def update_addr(self, type_, length):
         if type_ in self.var_counters:
             self.var_counters[type_] += length - 1
@@ -30,6 +33,7 @@ class FuncRecord:
             self.var_counters[type_] = length - 1
 
 
+# Clase para guardar la definición de una lista
 @attr.s
 class ListDef:
     type_: str = attr.ib(None)
@@ -38,6 +42,7 @@ class ListDef:
     addr: int = attr.ib(None)
 
 
+# Clase para guardar la definición de una variable
 @attr.s
 class VarRecord:
     addr: int = attr.ib()
@@ -45,6 +50,7 @@ class VarRecord:
     is_global: bool = attr.ib(False)
 
 
+# Clase para guardar la definición de un operando
 @attr.s
 class Operand:
     name: str = attr.ib()
@@ -54,6 +60,7 @@ class Operand:
     dim: list = attr.ib(None)
 
 
+# Clase para guardar la definición de un cuádruplo
 @attr.s
 class Quad:
     operator = attr.ib()
@@ -62,6 +69,7 @@ class Quad:
     result: Any = attr.ib(None)
 
 
+# Clase principal del compilador
 class Compiler:
     """Compiler logic and state."""
     func_directory = {
@@ -92,14 +100,14 @@ class Compiler:
     constants = {'Int': {}, 'Float': {}, 'String': {},
                  'Bool': {}, 'non': {}, '[Any]': {}}
     gotos = []
-    temp = 0  # <- Es el id de variables temporales?
-    # Memory = namedtuple('Memory', ['number', 'value'])
-    # memory = Memory()
+    temp = 0  # ID de los temporales
 
     def set_negative(self):
+        """Indica que la siguiente variable es negativa"""
         self.negative = True
 
     def define_function(self, func_name):
+        """Agrega la función al stack y crea su registro en directorio de funciones"""
         self.function_stack.append(func_name)
         if func_name in self.func_directory:
             Exception("Function {} already defined".format(func_name))
@@ -110,12 +118,14 @@ class Compiler:
                        }, 0, len(self.quadruples))
 
     def set_function_return_type(self, func_name, ret_type):
+        """Indica el tipo de retorno de la función y su cuádruplo de inicio"""
         self.func_directory[func_name].type_ = ret_type
         self.gotos.append(len(self.quadruples))
         self.quadruples.append(Quad("GOTO"))
         self.func_directory[func_name].start_ = len(self.quadruples)
 
     def process_function_clause(self):
+        """Procesa el final de una cláusula en la función"""
         self.quadruples.append(Quad("RETURN", result=self.operand_stack.pop()))
         quad_idx = self.gotos.pop()
         temp = self.quadruples[quad_idx]
@@ -124,9 +134,11 @@ class Compiler:
         temp.result = len(self.quadruples)
 
     def process_default_clause(self):
+        """Procesa la cláusula default en la función"""
         self.quadruples.append(Quad("RETURN", result=self.operand_stack.pop()))
 
     def process_function_end(self):
+        """Final de función: soluciona pila de saltos y agrega cuádruplo de ENDPROC"""
         while len(self.gotos) > 1:
             quad_idx = self.gotos.pop()
             quad = self.quadruples[quad_idx]
@@ -140,6 +152,7 @@ class Compiler:
         self.temp = 0
 
     def process_param(self, ident, type_):
+        """Crea una dirección para el parámetro y aumenta el contador de parámetros"""
         function_name = self.function_stack[-1]
         function = self.func_directory[function_name]
         function.params_ += 1
@@ -152,31 +165,38 @@ class Compiler:
         function.params_addrs.append(addr)
 
     def check_user_def_type(self, type_id):
+        """Verifica que el tipo del usuario esté definido"""
         if type_id not in self.type_directory:
             raise Exception(f"Undefined type {type_id}")
 
     def define_type(self, type_id, type_value):
+        """Define un nuevo tipo"""
         if type_value.startswith("("):
             type_value = type_value[1:-1].split("|")
 
     def condition(self):
+        """Crea un cuádruplo de GOTOF para el condicional"""
         self.gotos.append(len(self.quadruples))
         self.quadruples.append(
             Quad("GOTOF", self.operand_stack.pop()))
 
     def add_operator(self, operator):
+        """Agrega operando a la pila"""
         self.operator_stack.append(operator)
 
     def start_parens(self):
+        """Marca el inicio de los paréntesis"""
         self.operator_stack.append('(')
 
     def end_parens(self):
+        """Verifica que el último operando sea un paréntesis"""
         if self.operator_stack[-1] == '(':
             self.operator_stack.pop()
         else:
             raise Exception("Parenthesis mismatch")
 
     def handle_math_operation(self, *operators):
+        """Realiza una operación y crea un temporal con el resultado"""
         if self.operator_stack[-1] in operators:
             right_operand = self.operand_stack.pop()
             left_operand = self.operand_stack.pop()
@@ -197,6 +217,7 @@ class Compiler:
             self.temp = self.temp + 1
 
     def get_variable(self, ident, scope=None):
+        """Mete la variable a la pila de operandos"""
         if self.negative:
             ident = f'-{ident}'
             self.negative = False
@@ -239,6 +260,7 @@ class Compiler:
                 'Supplying a specific context is not yet supported.')
 
     def add_literal(self, value, type_):
+        """Crea una nueva constante en el scope global"""
         var_ctx = self.get_var_ctx(type_, is_global=True)
         function = self.func_directory['global']
         addr = function.next_addr(type_)
@@ -247,6 +269,7 @@ class Compiler:
         return addr
 
     def get_literal(self, literal, type_):
+        """Busca la constante y si no la encuentra, la crea"""
         if self.negative:
             literal = f'-{literal}'
             self.negative = False
@@ -260,23 +283,18 @@ class Compiler:
         )
 
     def start_list(self):
-        # Da de alta la lista y es a la que se le agregan los resultados de las expresiones
-        # Creo que necesitamos un stack de listas para permitir que haga listas dentro de listas,
-        # Ya que la gramática lo permite
-        # function = self.func_directory[self.function_stack[-1]]
+        """Marca el inicio de una lista"""
         self.list_stack.append(ListDef('[Int]', 'Int'))
 
     def create_first(self):
-        # Recibe el ultimo operando, resultado de la expression,
-        # valida que sea del tipo de la lista y si sí, agrega el elemento
+        """Ve el primer tipo y marca el tipo de elemento de la lista"""
         operand = self.operand_stack[-1]
         type_ = operand.type_
         self.list_stack[-1].primitive_type = type_.strip('[]')
         self.list_stack[-1].type_ = f'[{type_}]'
 
     def add_to_list(self):
-        # Recibe el ultimo operando, resultado de la expression,
-        # valida que sea del tipo de la lista y si sí, agrega el elemento
+        """Inserta cuádruplo de COPYVAL para el valor de la lista"""
         operand = self.operand_stack.pop()
         type_ = operand.type_
         list_def = self.list_stack[-1]
@@ -292,28 +310,10 @@ class Compiler:
             )
 
     def end_list(self):
-        # Termina la lista en el tope del stack y realiza las operaciones
-        # necesarias de tamaños y eso
+        """Marca el final de una lista, crea la dirección en memoria
+        y agrega el cuádruplo SET"""
         listdef = self.list_stack[-1]
-        # key = len(self.list_stack)
         function = self.func_directory[self.function_stack[-1]]
-        # r = 1
-        # if key not in self.list_dims:
-        #     self.list_dims[key] = self.list_stack[-1].total
-        # else:
-        #     if self.list_dims[key] != self.list_stack[-1].total:
-        #         raise Exception("List dimensions do not match")
-        # dim = []
-        # if key == 1:
-        #     for _, v in self.list_dims.items():
-        #         r *= v
-        #     for i in range(1, len(self.list_dims) + 1):
-        #         m = int(r / self.list_dims[i])
-        #         dim.append((self.list_dims[i], m))
-        #         r /= self.list_dims[i]
-
-        # if len(self.list_stack) == 1:
-        # function.update_addr(listdef.primitive_type, listdef.total)
         listdef.addr = function.next_addr(listdef.primitive_type)
         for quad_idx in self.copy_val_queue:
             quad = self.quadruples[quad_idx]
@@ -333,10 +333,18 @@ class Compiler:
         )
 
     def check_function(self, ident):
+        """Verifica que la función esté dada de alta en el directorio"""
         if ident not in self.func_directory:
             raise Exception(f"Function {ident} does not exist.")
 
     def call_function(self, ident):
+        """
+        Función que realiza la ejecución del módulo, dependiendo de
+        si es una función del sistema o definida por el usuario se
+        agregan los cuádruplos correspondientes (para las 
+        del usuario ERA, GOSUB y para las del sistema los parámetros y el
+        cuádruplo de la función)
+        """
         function = self.func_directory[ident]
         for i in range(function.params_):
             self.quadruples.append(
@@ -401,6 +409,7 @@ class Compiler:
             self.quadruples.append(Quad("GOSUB", ident, addr, function.start_))
 
     def get_var_ctx(self, type_, is_global=False):
+        """Regera la tabla de variables para el contexto actual"""
         if type_.startswith('['):
             type_ = type_.strip('[]')
         func_name = "global" if is_global else self.function_stack[-1]
@@ -409,6 +418,10 @@ class Compiler:
         return var_ctx
 
     def handle_assignment(self, ident, type_):
+        """
+        Verifica que no esté ya definida la variable, le asigna memoria y crea
+        un cuádruplo de ASSIGN
+        """
         function = self.func_directory[self.function_stack[-1]]
         all_vars_ = function.vars_
         operand = self.operand_stack.pop()
@@ -433,13 +446,17 @@ class Compiler:
         self.operand_stack.append(Operand('non', 'non', 0, True))
 
     def print_state(self):
+        """Imprime el estado actual del compilador"""
+        print("---------COMPILING---------")
         pp.pprint(self.func_directory)
         for i, quad in enumerate(self.quadruples):
             print(i, quad)
-        pp.pprint(self.operand_stack)
-        pp.pprint(self.operator_stack)
+        # pp.pprint(self.operand_stack)
+        # pp.pprint(self.operator_stack)
+        print("---------END COMPILATION---------")
 
     def save_state(self, parser):
+        """Guarda las tablas para pasarlas a la máquina virtual"""
         parser.quadruples = self.quadruples
         parser.func_directory = self.func_directory
         parser.type_directory = self.type_directory
