@@ -5,7 +5,7 @@ if __name__ is not None and "." in __name__:
 else:
     from QuarkParser import QuarkParser
 
-from compiler import Compiler
+from Compiler import Compiler
 c = Compiler()
 quadruples = None
 func_directory = None
@@ -250,21 +250,12 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#ListStart.
-    def enterListStart(self, ctx:QuarkParser.ListStartContext):
+    # Enter a parse tree produced by QuarkParser#ListLiteral.
+    def enterListLiteral(self, ctx:QuarkParser.ListLiteralContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#ListStart.
-    def exitListStart(self, ctx:QuarkParser.ListStartContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#varconst.
-    def enterVarconst(self, ctx:QuarkParser.VarconstContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#varconst.
-    def exitVarconst(self, ctx:QuarkParser.VarconstContext):
+    # Exit a parse tree produced by QuarkParser#ListLiteral.
+    def exitListLiteral(self, ctx:QuarkParser.ListLiteralContext):
         pass
 
 
@@ -277,12 +268,12 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#ListExpr.
-    def enterListExpr(self, ctx:QuarkParser.ListExprContext):
+    # Enter a parse tree produced by QuarkParser#varconst.
+    def enterVarconst(self, ctx:QuarkParser.VarconstContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#ListExpr.
-    def exitListExpr(self, ctx:QuarkParser.ListExprContext):
+    # Exit a parse tree produced by QuarkParser#varconst.
+    def exitVarconst(self, ctx:QuarkParser.VarconstContext):
         pass
 
 

@@ -1,0 +1,8 @@
+def magic(x: [Int]) -> [Int] {
+  default {
+    [Int] y <- append(x, [6, 7, 8, 9]);
+    y;
+  }
+}
+[Int] y <- [1, 2, 3];
+[Int] enigma <- magic(y);
