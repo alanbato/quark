@@ -4,6 +4,7 @@
 La visión detrás del proyecto es aprender cómo se diseña e implementa un lenguaje de programación y de la misma forma aprender más sobre los lenguajes funcionales. El objetivo del lenguaje es ayudar a las personas a aprender a programar utilizando el paradigma funcional debido a que la mayoría de las opciones que están disponibles hoy en día no son tan amigables con el usuario. La categoría del lenguaje es funcional tomando inspiración de lenguajes como Haskell, Elixir y Python (aunque el último no es funcional). El lenguaje como tal no es complicado y por ende su alcance va principalmente ligado con definición de módulos ya que son los que se utilizan para hacer condicionales y ciclos mediante recursión.
 
 ## Manual de usuario
+Para correr el lenguaje es necesario instalar ANTLR, Python3 y el Pipfile. Luego se corre `python3 QuarkRunner.py nombre_del_archivo.qrk`
 ### Tipos y operaciones
 `quark` cuenta con los tipos tradicionales definidos:
 * Int
