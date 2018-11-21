@@ -35,7 +35,7 @@ class VirtualMachine():
                 self.set_value(addr, value, type_, True)
 
     def get_value(self, addr, type_, is_global=False):
-        # print(f"Get value at {addr} of {type_}. Global {is_global}")
+        print(f"Get value at {addr} of {type_}. Global {is_global}")
         if type_.startswith('['):
             type_ = type_.strip('[]')
         if is_global:
@@ -54,7 +54,7 @@ class VirtualMachine():
             return search_memory[self.EMPTY_ARR + addr]
 
     def set_value(self, addr, value, type_, is_global=False):
-        # print(f"Set value {value} in {addr} of {type_}. Global {is_global}")
+        print(f"Set value {value} in {addr} of {type_}. Global {is_global}")
         if type_.startswith('['):
             type_ = type_.strip('[]')
         if is_global:
@@ -71,7 +71,8 @@ class VirtualMachine():
         elif type_ == "String":
             search_memory[self.STRING_BASE + addr] = value
         elif type_ == "Any":
-            search_memory[self.EMPTY_ARR + addr] = value
+            self.list_table[addr] = []
+            search_memory[self.EMPTY_ARR + addr] = self.list_table[addr]
 
     def process_param(self, param):
         self.params.insert(0, param)
@@ -114,15 +115,17 @@ class VirtualMachine():
 
     def head(self, operand):
         param = self.params.pop()
-        if param.address in self.list_table:
-            value = self.list_table[0]
+        print('param', param, self.list_table)
+        address = self.get_value(param.address, param.type_, param.is_global)
+        if address in self.list_table:
+            value = self.list_table[address][0]
+            print('val', value)
             self.set_value(operand.address, value,
                            param.type_, param.is_global)
         else:
             self.set_value(operand.address, '[]',
-                           '[Any]', param.is_global)
+                           '[Int]', param.is_global)
             return
-        value = self.get_value(param.address, param.type_, param.is_global)
 
     def tail(self, operand):
         param = self.params.pop()
@@ -133,6 +136,7 @@ class VirtualMachine():
             self.set_value(operand.address, '[]', '[Any]', param.is_global)
             return
         else:
+            print(self.list_table)
             lst = self.list_table[value][1:]
             self.set_value(operand.address, operand.address,
                            operand.type_, param.is_global)
@@ -149,6 +153,7 @@ class VirtualMachine():
         temp_memory = []
         self.param_defs = self.func_directory[func_name].params_addrs
         for i, param in enumerate(self.params):
+            param_value = self.get_value(param.address, param.type_)
             temp_memory = self.memory
             self.memory = new_memory
             if param.dim:
@@ -158,7 +163,6 @@ class VirtualMachine():
                 # Not sure if this should be the way
                 self.set_value(param_def_addr, param_def_addr, param.type_)
             else:
-                param_value = self.get_value(param.address, param.type_)
                 param_def_addr = self.param_defs[i]
                 self.set_value(param_def_addr, param_value, param.type_)
             self.memory = temp_memory
@@ -174,6 +178,7 @@ class VirtualMachine():
         go_sub_idx = self.call_stack[-1] - 1
         right_address = self.quadruples[go_sub_idx].right
         search_memory = self.memory_stack[-2]
+        print(op, value)
         if op.dim:
             self.list_table_stack[-2][right_address] = self.list_table[value]
             search_memory[self.INT_BASE + right_address] = right_address
@@ -200,12 +205,17 @@ class VirtualMachine():
             right.address, right.type_, right.is_global)
         type_ = type(left_value)
         result_op = quad.result
-        if left_value is None or right_value is None:
-            if left_value is right_value:
-                self.set_value(result_op.address, True,
+        print(self.memory_stack[0][:10])
+        if left.dim and right.dim:
+            left_list = self.list_table[left_value]
+            right_list = self.list_table[right_value]
+            operation = getattr(type_, method)
+            result = operation(left_list, right_list)
+            if result:
+                self.set_value(result_op.address, result,
                                result_op.type_, result_op.is_global)
             else:
-                self.set_value(result_op.address, False,
+                self.set_value(result_op.address, result,
                                result_op.type_, result_op.is_global)
             return
         operation = getattr(type_, method)
@@ -222,6 +232,7 @@ class VirtualMachine():
         i = 0
         while i < len(self.quadruples):
             quad = self.quadruples[i]
+            print(quad)
             if quad.operator == 'ASSIGN':
                 value_addr = quad.left.address
                 value_type = quad.left.type_

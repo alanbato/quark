@@ -1,8 +1,10 @@
 def factorial(n: Int) -> Int {
   (n <= 1) {
+      print(n);
       1;
   }
   default {
+      print(n);
       n * factorial(n-1);
   }
 }

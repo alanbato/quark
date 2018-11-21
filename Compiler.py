@@ -235,7 +235,7 @@ class Compiler:
 
     def add_literal(self, value, type_):
         var_ctx = self.get_var_ctx(type_, is_global=True)
-        function = self.func_directory[self.function_stack[-1]]
+        function = self.func_directory['global']
         addr = function.next_addr(type_)
         var_ctx[value] = VarRecord(addr, None, True)
         self.constants[type_][addr] = value
@@ -337,7 +337,7 @@ class Compiler:
             func_name = self.function_stack[-1]
             addr = self.func_directory[func_name].next_addr('Int')
             self.func_directory[func_name].vars_[
-                function.type_][f"__T{self.temp}__"] = VarRecord(addr)
+                'Int'][f"__T{self.temp}__"] = VarRecord(addr)
             result_operand = Operand(
                 f"__T{self.temp}__head", 'Int', addr, func_name == 'global')
             self.operand_stack.append(result_operand)
@@ -349,7 +349,7 @@ class Compiler:
             self.func_directory[func_name].vars_[
                 'Int'][f"__T{self.temp}__"] = VarRecord(addr, True)
             result_operand = Operand(
-                f"__T{self.temp}__tail", '[Any]', addr, func_name == 'global', dim=True)
+                f"__T{self.temp}__tail", '[Int]', addr, func_name == 'global', dim=True)
             self.operand_stack.append(result_operand)
             self.quadruples.append(Quad("TAIL", result_operand))
             self.temp += 1

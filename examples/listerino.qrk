@@ -8,4 +8,4 @@ def magic(x: [Int]) -> [Int] {
 [Int] enigma <- magic([1, 2, 3]);
 print(enigma);
 [Int] enigma2 <- magic(magic([4,5,6,7]));
-print(enigma2);
+print(head(enigma2));
