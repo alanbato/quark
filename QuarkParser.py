@@ -1732,7 +1732,7 @@ class QuarkParser ( Parser ):
                 self.enterOuterAlt(localctx, 1)
                 self.state = 251
                 self.match(QuarkParser.T__17)
-                c.get_literal('[]', "Int")
+                c.get_literal('[]', "[Int]")
                 pass
             elif token in [QuarkParser.T__1, QuarkParser.T__14, QuarkParser.T__16, QuarkParser.T__32, QuarkParser.T__33, QuarkParser.T__34, QuarkParser.ID, QuarkParser.CONST_I, QuarkParser.CONST_F, QuarkParser.STRING]:
                 localctx = QuarkParser.ListExprContext(self, localctx)

@@ -205,9 +205,14 @@ class Compiler:
             all_vars_ = self.func_directory[self.function_stack[-1]].vars_
             for var_type_, vars_ in all_vars_.items():
                 if ident in vars_:
+                    variable = vars_[ident]
+                    if variable.dim:
+                        type_ = f"[{var_type_}]"
+                    else:
+                        type_ = var_type_
                     self.operand_stack.append(
-                        Operand(ident, var_type_, vars_[
-                                ident].addr, False, vars_[ident].dim)
+                        Operand(ident, type_, variable.addr,
+                                False, variable.dim)
                     )
                     break
             else:
@@ -245,9 +250,9 @@ class Compiler:
         if self.negative:
             literal = f'-{literal}'
             self.negative = False
-        var_ctx = self.get_var_ctx(type_, is_global=True)
+        var_ctx = self.get_var_ctx(type_.strip('[]'), is_global=True)
         if literal not in var_ctx:
-            addr = self.add_literal(literal, type_)
+            addr = self.add_literal(literal, type_.strip('[]'))
         else:
             addr = var_ctx[literal].addr
         self.operand_stack.append(
@@ -290,36 +295,39 @@ class Compiler:
         # Termina la lista en el tope del stack y realiza las operaciones
         # necesarias de tamaños y eso
         listdef = self.list_stack[-1]
-        key = len(self.list_stack)
+        # key = len(self.list_stack)
         function = self.func_directory[self.function_stack[-1]]
-        r = 1
-        if key not in self.list_dims:
-            self.list_dims[key] = self.list_stack[-1].total
-        else:
-            if self.list_dims[key] != self.list_stack[-1].total:
-                raise Exception("List dimensions do not match")
-        dim = []
-        if key == 1:
-            for _, v in self.list_dims.items():
-                r *= v
-            for i in range(1, len(self.list_dims) + 1):
-                m = int(r / self.list_dims[i])
-                dim.append((self.list_dims[i], m))
-                r /= self.list_dims[i]
+        # r = 1
+        # if key not in self.list_dims:
+        #     self.list_dims[key] = self.list_stack[-1].total
+        # else:
+        #     if self.list_dims[key] != self.list_stack[-1].total:
+        #         raise Exception("List dimensions do not match")
+        # dim = []
+        # if key == 1:
+        #     for _, v in self.list_dims.items():
+        #         r *= v
+        #     for i in range(1, len(self.list_dims) + 1):
+        #         m = int(r / self.list_dims[i])
+        #         dim.append((self.list_dims[i], m))
+        #         r /= self.list_dims[i]
 
-        if len(self.list_stack) == 1:
-            # function.update_addr(listdef.primitive_type, listdef.total)
-            listdef.addr = function.next_addr(listdef.primitive_type)
-            for quad_idx in self.copy_val_queue:
-                quad = self.quadruples[quad_idx]
-                quad.result = listdef.addr
-            self.copy_val_queue = []
-            self.list_dims = {}
+        # if len(self.list_stack) == 1:
+        # function.update_addr(listdef.primitive_type, listdef.total)
+        listdef.addr = function.next_addr(listdef.primitive_type)
+        for quad_idx in self.copy_val_queue:
+            quad = self.quadruples[quad_idx]
+            quad.result = listdef.addr
+        self.copy_val_queue = []
+        self.list_dims = {}
         self.list_stack.pop()
-        self.operand_stack.append(
-            Operand("list", listdef.type_, listdef.addr,
-                    self.function_stack[-1] == "global", dim)
+        constant_addr = self.func_directory['global'].next_addr(
+            listdef.primitive_type)
+        self.constants[listdef.primitive_type][constant_addr] = listdef.addr
+        operand = Operand(
+            "list", listdef.type_, listdef.addr, self.function_stack[-1] == "global", True
         )
+        self.operand_stack.append(operand)
 
     def check_function(self, ident):
         if ident not in self.func_directory:

@@ -4,6 +4,7 @@ from collections import namedtuple
 INT = "Int"
 ANY = "Any"
 ARR_ANY = "[Any]"
+ARR_DELIMITERS = "[]"
 STRING = "String"
 FLOAT = "Float"
 BOOL = "Bool"
@@ -12,6 +13,8 @@ TYPE_ERROR = "Operator {} not defined for types {} and {}"
 
 
 def check_operation_type(op, t1, t2):
+    t1 = t1.strip(ARR_DELIMITERS)
+    t2 = t2.strip(ARR_DELIMITERS)
     if op == "+":
         if t1 == STRING and t2 == STRING:
             return STRING

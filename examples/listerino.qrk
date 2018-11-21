@@ -1,11 +1,9 @@
 def magic(x: [Int]) -> [Int] {
   default {
-    [Int] y <- tail(x);
+    [Int] y <- append(x, [6, 7, 8, 9]);
     y;
   }
 }
 
 [Int] enigma <- magic([1, 2, 3]);
 print(enigma);
-[Int] enigma2 <- magic(magic([4,5,6,7]));
-print(head(enigma2));
