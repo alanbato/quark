@@ -76,18 +76,16 @@ factor:
 	| 'False' {c.get_literal(False, "Bool")}					# False
 	| 'non' {c.get_literal('non', "non")}						# False
 	| STRING {c.get_literal($STRING.text, "String")}			# StringLiteral
-	| '[' list_def												# ListStart;
+	| '[' {c.start_list()} (
+		expression {c.create_first(); c.add_to_list()} (
+			',' expression {c.add_to_list()}
+		)*
+	)? ']' {c.end_list()} # ListLiteral;
 varconst:
 	func_call
 	| ID {c.get_variable($ID.text)}
 	| CONST_I {c.get_literal($CONST_I.text, "Int")}
 	| CONST_F {c.get_literal($CONST_F.text, "Float")};
-list_def:
-	']' {c.get_literal('[]', "[Int]")} # EmptyList
-	| {c.start_list()} expression {
-c.create_first(); c.add_to_list()
-} (',' expression {c.add_to_list()})* ']' {c.end_list()} # ListExpr;
-
 block: statement (statement)*;
 
 statement: assignment ';' | expression ';';
@@ -98,8 +96,7 @@ func_call:
 			};
 assignment:
 	typeRule ID '<-' expression {c.handle_assignment($ID.text, $typeRule.text)};
-main:
-	things morethings {c.print_state(); c.save_state(self)} EOF;
+main: things morethings {c.save_state(self)} EOF;
 things:
 	function
 	| assignment ';'

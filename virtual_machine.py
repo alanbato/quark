@@ -35,7 +35,7 @@ class VirtualMachine():
                 self.set_value(addr, value, type_, True)
 
     def get_value(self, addr, type_, is_global=False):
-        print(f"Get value at {addr} of {type_}. Global {is_global}")
+        # print(f"Get value at {addr} of {type_}. Global {is_global}")
         if type_.startswith('['):
             type_ = type_.strip('[]')
         if is_global:
@@ -54,7 +54,7 @@ class VirtualMachine():
             return search_memory[self.EMPTY_ARR + addr]
 
     def set_value(self, addr, value, type_, is_global=False):
-        print(f"Set value {value} in {addr} of {type_}. Global {is_global}")
+        # print(f"Set value {value} in {addr} of {type_}. Global {is_global}")
         if type_.startswith('['):
             type_ = type_.strip('[]')
         if is_global:
@@ -151,8 +151,9 @@ class VirtualMachine():
             self.memory = new_memory
             if param.dim:
                 param_def_addr = self.param_defs[i]
-                param_list = self.list_table[param.address]
+                param_list = self.list_table[param_value]
                 new_list_memory[param_def_addr] = param_list
+                print(self.list_table, param)
                 # Not sure if this should be the way
                 self.set_value(param_def_addr, param_def_addr, param.type_)
             else:

@@ -264,7 +264,7 @@ class Compiler:
         # Creo que necesitamos un stack de listas para permitir que haga listas dentro de listas,
         # Ya que la gramática lo permite
         # function = self.func_directory[self.function_stack[-1]]
-        self.list_stack.append(ListDef())
+        self.list_stack.append(ListDef('[Int]', 'Int'))
 
     def create_first(self):
         # Recibe el ultimo operando, resultado de la expression,
@@ -321,7 +321,7 @@ class Compiler:
         self.copy_val_queue = []
         self.list_dims = {}
         self.list_stack.pop()
-        constant_addr = self.func_directory['global'].next_addr(
+        constant_addr = self.func_directory[self.function_stack[-1]].next_addr(
             listdef.primitive_type)
         self.constants[listdef.primitive_type][constant_addr] = listdef.addr
         operand = Operand(
@@ -392,7 +392,6 @@ class Compiler:
             dim = function.type_.startswith('[')
             return_operand = Operand(
                 f"__T{self.temp}__", function.type_, addr, func_name == 'global', dim)
-            print(return_operand)
             self.operand_stack.append(return_operand)
             self.temp += 1
             # Call function

@@ -250,12 +250,12 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by QuarkParser#ListStart.
-    def enterListStart(self, ctx:QuarkParser.ListStartContext):
+    # Enter a parse tree produced by QuarkParser#ListLiteral.
+    def enterListLiteral(self, ctx:QuarkParser.ListLiteralContext):
         pass
 
-    # Exit a parse tree produced by QuarkParser#ListStart.
-    def exitListStart(self, ctx:QuarkParser.ListStartContext):
+    # Exit a parse tree produced by QuarkParser#ListLiteral.
+    def exitListLiteral(self, ctx:QuarkParser.ListLiteralContext):
         pass
 
 
@@ -265,24 +265,6 @@ class QuarkListener(ParseTreeListener):
 
     # Exit a parse tree produced by QuarkParser#varconst.
     def exitVarconst(self, ctx:QuarkParser.VarconstContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#EmptyList.
-    def enterEmptyList(self, ctx:QuarkParser.EmptyListContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#EmptyList.
-    def exitEmptyList(self, ctx:QuarkParser.EmptyListContext):
-        pass
-
-
-    # Enter a parse tree produced by QuarkParser#ListExpr.
-    def enterListExpr(self, ctx:QuarkParser.ListExprContext):
-        pass
-
-    # Exit a parse tree produced by QuarkParser#ListExpr.
-    def exitListExpr(self, ctx:QuarkParser.ListExprContext):
         pass
 
 
