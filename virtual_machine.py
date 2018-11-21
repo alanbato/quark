@@ -29,7 +29,7 @@ class VirtualMachine():
         for type_, variables in constants.items():
             for addr, value in variables.items():
                 if type_ == 'Int':
-                    value = int(value)
+                    value = int(value) if value != '[]' else value
                 elif type_ == 'Float':
                     value = float(value)
                 self.set_value(addr, value, type_, True)
@@ -62,6 +62,10 @@ class VirtualMachine():
         else:
             search_memory = self.memory
         if type_ == "Int":
+            if value == '[]':
+                self.list_table[addr] = []
+                self.memory[self.INT_BASE + addr] = addr
+                return
             search_memory[self.INT_BASE + addr] = value
         elif type_ == "Float":
             search_memory[self.FLOAT_BASE + addr] = value
@@ -71,7 +75,6 @@ class VirtualMachine():
         elif type_ == "String":
             search_memory[self.STRING_BASE + addr] = value
         elif type_ == "Any":
-            self.list_table[addr] = []
             search_memory[self.EMPTY_ARR + addr] = self.list_table[addr]
 
     def process_param(self, param):
@@ -94,7 +97,7 @@ class VirtualMachine():
     def append_(self, operand):
         param1 = self.params.pop()
         param2 = self.params.pop()
-        print(param1, param2)
+        print('append', param1, param2)
         counter = 0
         for i in range(5):
             value = self.get_value(
@@ -115,9 +118,10 @@ class VirtualMachine():
 
     def head(self, operand):
         param = self.params.pop()
+        print(param)
         print('param', param, self.list_table)
         address = self.get_value(param.address, param.type_, param.is_global)
-        if address in self.list_table:
+        if address in self.list_table and len(self.list_table[address]) > 1:
             value = self.list_table[address][0]
             print('val', value)
             self.set_value(operand.address, value,
@@ -136,7 +140,6 @@ class VirtualMachine():
             self.set_value(operand.address, '[]', '[Any]', param.is_global)
             return
         else:
-            print(self.list_table)
             lst = self.list_table[value][1:]
             self.set_value(operand.address, operand.address,
                            operand.type_, param.is_global)
@@ -157,8 +160,8 @@ class VirtualMachine():
             temp_memory = self.memory
             self.memory = new_memory
             if param.dim:
-                param_list = self.list_table[param.address]
                 param_def_addr = self.param_defs[i]
+                param_list = self.list_table[param.address]
                 new_list_memory[param_def_addr] = param_list
                 # Not sure if this should be the way
                 self.set_value(param_def_addr, param_def_addr, param.type_)
@@ -205,11 +208,11 @@ class VirtualMachine():
             right.address, right.type_, right.is_global)
         type_ = type(left_value)
         result_op = quad.result
-        print(self.memory_stack[0][:10])
+        print(left, right)
         if left.dim and right.dim:
             left_list = self.list_table[left_value]
             right_list = self.list_table[right_value]
-            operation = getattr(type_, method)
+            operation = getattr(list, method)
             result = operation(left_list, right_list)
             if result:
                 self.set_value(result_op.address, result,

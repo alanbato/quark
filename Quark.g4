@@ -83,7 +83,7 @@ varconst:
 	| CONST_I {c.get_literal($CONST_I.text, "Int")}
 	| CONST_F {c.get_literal($CONST_F.text, "Float")};
 list_def:
-	']' {c.get_literal('[]', "[Any]")} # EmptyList
+	']' {c.get_literal('[]', "Int")} # EmptyList
 	| {c.start_list()} expression {
 c.create_first(); c.add_to_list()
 } (',' expression {c.add_to_list()})* ']' {c.end_list()} # ListExpr;

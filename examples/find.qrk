@@ -10,6 +10,4 @@ def find(elem: Int, vect: [Int]) -> Bool {
   }
 }
 
-[Int] arr_1 <- [1, 2, 3];
-print(find(5, arr_1));
-print(find(2, arr_1));
+print(find(5, [1, 2, 3]));

@@ -251,7 +251,7 @@ class Compiler:
         else:
             addr = var_ctx[literal].addr
         self.operand_stack.append(
-            Operand(literal, type_, addr, True)
+            Operand(literal, type_, addr, True, literal == '[]')
         )
 
     def start_list(self):
@@ -356,11 +356,10 @@ class Compiler:
         elif ident == 'append':
             func_name = self.function_stack[-1]
             addr = self.func_directory[func_name].next_addr('Int')
-            self.func_directory[func_name].update_addr('Int', 25)
             self.func_directory[func_name].vars_[
                 'Int'][f"__T{self.temp}__"] = VarRecord(addr)
             result_operand = Operand(
-                f"__T{self.temp}__append", '[Any]', addr, func_name == 'global', True)
+                f"__T{self.temp}__append", '[Int]', addr, func_name == 'global', True)
             self.operand_stack.append(result_operand)
             self.quadruples.append(Quad("APPEND", result_operand))
             self.temp += 1
