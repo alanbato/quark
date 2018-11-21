@@ -259,6 +259,15 @@ class QuarkListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by QuarkParser#EmptyList.
+    def enterEmptyList(self, ctx:QuarkParser.EmptyListContext):
+        pass
+
+    # Exit a parse tree produced by QuarkParser#EmptyList.
+    def exitEmptyList(self, ctx:QuarkParser.EmptyListContext):
+        pass
+
+
     # Enter a parse tree produced by QuarkParser#varconst.
     def enterVarconst(self, ctx:QuarkParser.VarconstContext):
         pass

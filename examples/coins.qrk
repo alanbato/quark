@@ -1,0 +1,6 @@
+[Int] arr <- [1,2,3];
+print(head(arr) = 1);
+print(tail(arr) = [2, 3]);
+print(head(tail(arr)) = 2);
+print(head([]));
+print(append(tail(tail(tail(arr))), [1,2]))

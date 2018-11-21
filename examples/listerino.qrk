@@ -6,4 +6,3 @@ def magic(x: [Int]) -> [Int] {
 }
 [Int] y <- [1, 2, 3];
 [Int] enigma <- magic(y);
-print(enigma);

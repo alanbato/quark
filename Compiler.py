@@ -59,7 +59,7 @@ class Quad:
     operator = attr.ib()
     left: Operand = attr.ib(None)
     right: Operand = attr.ib(None)
-    result: Any = attr.ib(attr.Factory(str))
+    result: Any = attr.ib(None)
 
 
 class Compiler:
@@ -116,7 +116,7 @@ class Compiler:
         self.func_directory[func_name].start_ = len(self.quadruples)
 
     def process_function_clause(self):
-        self.quadruples.append(Quad("RETURN", self.operand_stack.pop()))
+        self.quadruples.append(Quad("RETURN", result=self.operand_stack.pop()))
         quad_idx = self.gotos.pop()
         temp = self.quadruples[quad_idx]
         self.gotos.append(len(self.quadruples))
@@ -124,7 +124,7 @@ class Compiler:
         temp.result = len(self.quadruples)
 
     def process_default_clause(self):
-        self.quadruples.append(Quad("RETURN", self.operand_stack.pop()))
+        self.quadruples.append(Quad("RETURN", result=self.operand_stack.pop()))
 
     def process_function_end(self):
         while len(self.gotos) > 1:
@@ -231,7 +231,7 @@ class Compiler:
                         Operand(ident, var_type_, vars_[
                                 ident].addr, True, vars_[ident].dim)
                     )
-                break
+                    break
             else:
                 raise Exception(f'{ident} is undefined.')
         else:
@@ -321,13 +321,16 @@ class Compiler:
         self.copy_val_queue = []
         self.list_dims = {}
         self.list_stack.pop()
-        constant_addr = self.func_directory[self.function_stack[-1]].next_addr(
+        constant_addr = self.func_directory['global'].next_addr(
             listdef.primitive_type)
         self.constants[listdef.primitive_type][constant_addr] = listdef.addr
         operand = Operand(
             "list", listdef.type_, listdef.addr, self.function_stack[-1] == "global", True
         )
         self.operand_stack.append(operand)
+        self.quadruples.append(
+            Quad("SET", listdef.addr, result=operand)
+        )
 
     def check_function(self, ident):
         if ident not in self.func_directory:
@@ -349,7 +352,7 @@ class Compiler:
             result_operand = Operand(
                 f"__T{self.temp}__head", 'Int', addr, func_name == 'global')
             self.operand_stack.append(result_operand)
-            self.quadruples.append(Quad("HEAD", result_operand))
+            self.quadruples.append(Quad("HEAD", result=result_operand))
             self.temp += 1
         elif ident == 'tail':
             func_name = self.function_stack[-1]
@@ -359,7 +362,7 @@ class Compiler:
             result_operand = Operand(
                 f"__T{self.temp}__tail", '[Int]', addr, func_name == 'global', dim=True)
             self.operand_stack.append(result_operand)
-            self.quadruples.append(Quad("TAIL", result_operand))
+            self.quadruples.append(Quad("TAIL", result=result_operand))
             self.temp += 1
         elif ident == 'append':
             func_name = self.function_stack[-1]
@@ -369,7 +372,7 @@ class Compiler:
             result_operand = Operand(
                 f"__T{self.temp}__append", '[Int]', addr, func_name == 'global', True)
             self.operand_stack.append(result_operand)
-            self.quadruples.append(Quad("APPEND", result_operand))
+            self.quadruples.append(Quad("APPEND", result=result_operand))
             self.temp += 1
         elif ident == 'input':
             func_name = self.function_stack[-1]
@@ -379,10 +382,10 @@ class Compiler:
             result_operand = Operand(
                 'input', 'Int', addr, func_name == 'global')
             self.operand_stack.append(result_operand)
-            self.quadruples.append(Quad("INPUT", result_operand))
+            self.quadruples.append(Quad("INPUT", result=result_operand))
             self.temp += 1
         else:
-            self.quadruples.append(Quad("ERA", ident, None, None))
+            self.quadruples.append(Quad("ERA", result=ident))
             # Create temp variable
             func_name = self.function_stack[-1]
             new_type = function.type_.strip('[]')

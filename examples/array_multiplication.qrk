@@ -1,0 +1,28 @@
+def array_mult(uno: [Int], dos: [Int]) -> [Int] {
+    (uno = []) {
+        [];
+    }
+    (dos = []) {
+        [];
+    }
+    default {
+        append([head(uno) * head(dos)], array_mult(tail(uno), tail(dos)));
+    }
+}
+
+def array_mult(uno: [Int], dos: [Int]) -> Int {
+    (uno = []) {
+        0;
+    }
+    (dos = []) {
+        0;
+    }
+    default {
+        head(uno) * head(dos) + array_mult(tail(uno), tail(dos));
+    }
+}
+
+[Int] mult <- array_mult([1,2,3], [4,5,6]);
+Int scalar <- scalar_mutl([10,20,30], [40,50,60]);
+print(mult);
+print(scalar);

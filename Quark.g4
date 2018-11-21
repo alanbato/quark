@@ -76,11 +76,10 @@ factor:
 	| 'False' {c.get_literal(False, "Bool")}					# False
 	| 'non' {c.get_literal('non', "non")}						# False
 	| STRING {c.get_literal($STRING.text, "String")}			# StringLiteral
-	| '[' {c.start_list()} (
-		expression {c.create_first(); c.add_to_list()} (
-			',' expression {c.add_to_list()}
-		)*
-	)? ']' {c.end_list()} # ListLiteral;
+	| '[' {c.start_list()} expression {c.create_first(); c.add_to_list()} 
+		(',' expression {c.add_to_list()} )*
+		']' {c.end_list()} # ListLiteral
+	| '[' {c.start_list()} ']' {c.end_list()} # EmptyList;
 varconst:
 	func_call
 	| ID {c.get_variable($ID.text)}

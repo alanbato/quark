@@ -15,35 +15,25 @@ def smaller(x: Int, list: [Int]) -> [Int] {
     [];
   }
   (head(list) < x) {
-    print(head(list));
     append([head(list)], smaller(x, tail(list)));
   }
   default {
-    print(x);
-    print(list);
-    print("SMALL");
     smaller(x, tail(list));
   }
 }
 
 def quicksort(list: [Int]) -> [Int] {
   (list = []) {
-    print("EMPTY");
     [];
   }
   default {
-    print(list);
     Int first <- head(list);
-    [Int] greater <- bigger(first, tail(list));
     [Int] lower <- smaller(first, tail(list));
-    print(lower);
-    print(first);
-    print(greater);
+    [Int] greater <- bigger(first, tail(list));
     [Int] first_list <- [first];
-    print(first_list);
     append(append(quicksort(lower), first_list), quicksort(greater));
   }
 }
 
-[Int] unsorted <- [4, 1, 5, 2, 3];
-print(quicksort(unsorted));
+[Int] sorted <- [3,2,1,6,4,5,7,9,8,0];
+print(quicksort(sorted));
